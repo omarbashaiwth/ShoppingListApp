@@ -22,6 +22,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.omarahmed.shoppinglist.data.ShoppingItem
 import com.omarahmed.shoppinglist.R
+import com.omarahmed.shoppinglist.presentation.home.components.ShoppingItem
 import com.omarahmed.shoppinglist.presentation.shared.IconButton
 import com.omarahmed.shoppinglist.presentation.shared.ImageWithText
 import com.omarahmed.shoppinglist.presentation.ui.theme.*
@@ -45,47 +46,9 @@ fun HomeScreen(
         ),
     ) {
         items(shoppingList.size) {
-            ShoppingItem(shoppingItem = shoppingList[it], navController)
+            ShoppingItem(shoppingItem = shoppingList[it])
         }
     }
 }
 
-@Composable
-fun ShoppingItem(
-    shoppingItem: ShoppingItem,
-    navController: NavController
-) {
-    var isAddedToCart by remember {
-        mutableStateOf(shoppingItem.isAddedToCart)
-    }
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier
-            .padding(SmallSpace)
-            .clip(
-                RoundedCornerShape(
-                    topStart = LargeCornerRadius,
-                    bottomEnd = LargeCornerRadius
-                )
-            )
-            .fillMaxSize()
-            .background(MaterialTheme.colors.surface)
-    ) {
-        ImageWithText(item = shoppingItem)
-        IconButton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.BottomCenter)
-                .clip(RoundedCornerShape(bottomEnd = LargeCornerRadius))
-                .background(if (isAddedToCart) Color.Red else MaterialTheme.colors.primary)
-                .size(ButtonHeight),
-            onClick = {
-                isAddedToCart = !isAddedToCart
-            },
-            imageVector = if (isAddedToCart) Icons.Default.Check else Icons.Default.Add,
-            contentDescription = if (isAddedToCart) stringResource(id = R.string.remove) else stringResource(
-                id = R.string.add_to_cart
-            )
-        )
-    }
-}
+

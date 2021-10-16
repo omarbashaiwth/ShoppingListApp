@@ -1,8 +1,11 @@
 <resources>
     <string name="app_name">ShoppingList</string>
-    <string name="title">Shopping List</string>
+    <string name="shopping_list">Shopping List</string>
     <string name="search">Search</string>
     <string name="already_bought">Already bought</string>
     <string name="remove">Remove from cart</string>
     <string name="add_to_cart">Add to cart</string>
+    <string name="add_item">Add a new item</string>
+    <string name="cart">Cart</string>
+    <string name="back">Back</string>
 </resources>

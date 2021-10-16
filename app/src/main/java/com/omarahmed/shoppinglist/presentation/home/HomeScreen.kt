@@ -18,8 +18,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.omarahmed.data.ShoppingItem
+import com.omarahmed.shoppinglist.data.ShoppingItem
 import com.omarahmed.shoppinglist.R
 import com.omarahmed.shoppinglist.presentation.shared.IconButton
 import com.omarahmed.shoppinglist.presentation.shared.ImageWithText
@@ -28,19 +29,12 @@ import com.omarahmed.shoppinglist.presentation.ui.theme.*
 
 @ExperimentalFoundationApi
 @Composable
-fun HomeScreen(navController: NavController) {
-    val shoppingList = listOf(
-        ShoppingItem("Tomato", R.drawable.tomato),
-        ShoppingItem("Garlic", R.drawable.garlic),
-        ShoppingItem("Chicken", R.drawable.chicken),
-        ShoppingItem("Rice", R.drawable.rice),
-        ShoppingItem("Flour"),
-        ShoppingItem("Sugar"),
-        ShoppingItem("Tea"),
-        ShoppingItem("Potato"),
-        ShoppingItem("Tomato"),
-        ShoppingItem("Tomato"),
-    )
+fun HomeScreen(
+    navController: NavController,
+    viewModel: HomeViewModel = hiltViewModel()
+) {
+    val shoppingList = viewModel.state.value.shoppingList
+    val isLoading  = viewModel.state.value.isLoading
     LazyVerticalGrid(
         cells = GridCells.Fixed(2),
         contentPadding = PaddingValues(
@@ -62,7 +56,7 @@ fun ShoppingItem(
     navController: NavController
 ) {
     var isAddedToCart by remember {
-        mutableStateOf(false)
+        mutableStateOf(shoppingItem.isAddedToCart)
     }
     Box(
         contentAlignment = Alignment.Center,
@@ -87,14 +81,11 @@ fun ShoppingItem(
                 .size(ButtonHeight),
             onClick = {
                 isAddedToCart = !isAddedToCart
-                navController.navigate("test_screen")
             },
             imageVector = if (isAddedToCart) Icons.Default.Check else Icons.Default.Add,
             contentDescription = if (isAddedToCart) stringResource(id = R.string.remove) else stringResource(
                 id = R.string.add_to_cart
             )
         )
-
     }
-
 }

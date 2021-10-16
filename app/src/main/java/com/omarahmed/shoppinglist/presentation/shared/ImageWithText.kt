@@ -10,7 +10,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import com.omarahmed.data.ShoppingItem
+import coil.compose.rememberImagePainter
+import com.omarahmed.shoppinglist.data.ShoppingItem
 import com.omarahmed.shoppinglist.presentation.ui.theme.ImageSize
 import com.omarahmed.shoppinglist.presentation.ui.theme.LargeSpace
 import com.omarahmed.shoppinglist.presentation.ui.theme.MediumSpace
@@ -28,7 +29,7 @@ fun ImageWithText(
         )
     ) {
         Image(
-            painter = painterResource(id = item.image),
+            painter = rememberImagePainter(data = item.imageUrl),
             contentDescription = item.name,
             modifier = Modifier.size(ImageSize)
         )

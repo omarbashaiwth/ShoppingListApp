@@ -1,4 +1,4 @@
-package com.omarahmed.shoppinglist
+package com.omarahmed.shoppinglist.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -22,19 +22,20 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.omarahmed.data.ShoppingItem
+import com.omarahmed.shoppinglist.R
 import com.omarahmed.shoppinglist.presentation.TestScreen
 import com.omarahmed.shoppinglist.presentation.cart.CartScreen
 import com.omarahmed.shoppinglist.presentation.home.HomeScreen
 import com.omarahmed.shoppinglist.presentation.shared.IconButton
 import com.omarahmed.shoppinglist.presentation.ui.theme.*
 import com.omarahmed.shoppinglist.presentation.util.BottomNavItems
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 @ExperimentalFoundationApi
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

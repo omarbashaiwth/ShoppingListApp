@@ -13,7 +13,7 @@ import com.omarahmed.shoppinglist.presentation.util.Screens
 @Composable
 fun FabSection(navController: NavController) {
     FloatingActionButton(
-        onClick = { navController.navigate(Screens.AddItem.route)},
+        onClick = { navController.navigate(Screens.AddItemScreen.route)},
         shape = CircleShape,
         backgroundColor = MaterialTheme.colors.primary
     ) {

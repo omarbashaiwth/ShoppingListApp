@@ -11,6 +11,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import coil.compose.rememberImagePainter
+import com.omarahmed.shoppinglist.R
 import com.omarahmed.shoppinglist.data.ShoppingItem
 import com.omarahmed.shoppinglist.presentation.ui.theme.ImageSize
 import com.omarahmed.shoppinglist.presentation.ui.theme.LargeSpace
@@ -29,7 +30,10 @@ fun ImageWithText(
         )
     ) {
         Image(
-            painter = rememberImagePainter(data = item.imageUrl),
+            painter = rememberImagePainter(data = item.imageUrl) {
+                crossfade(2000)
+                placeholder(R.drawable.ic_cart)
+            },
             contentDescription = item.name,
             modifier = Modifier.size(ImageSize)
         )

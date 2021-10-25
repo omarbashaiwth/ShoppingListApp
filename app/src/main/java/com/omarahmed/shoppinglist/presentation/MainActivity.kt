@@ -8,26 +8,22 @@ import androidx.compose.material.FabPosition
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.More
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.omarahmed.shoppinglist.R
 import com.omarahmed.shoppinglist.presentation.add_item.AddItemScreen
 import com.omarahmed.shoppinglist.presentation.cart.CartScreen
 import com.omarahmed.shoppinglist.presentation.home.HomeScreen
 import com.omarahmed.shoppinglist.presentation.home.components.BottomBarSection
 import com.omarahmed.shoppinglist.presentation.home.components.FabSection
 import com.omarahmed.shoppinglist.presentation.home.components.ToolbarSection
-import com.omarahmed.shoppinglist.presentation.shared.IconButton
+import com.omarahmed.shoppinglist.presentation.search.SearchScreen
 import com.omarahmed.shoppinglist.presentation.ui.theme.*
 import com.omarahmed.shoppinglist.presentation.util.BottomNavItems
 import com.omarahmed.shoppinglist.presentation.util.Screens
@@ -48,37 +44,47 @@ class MainActivity : ComponentActivity() {
 //                }
                 Scaffold(
                     backgroundColor = MaterialTheme.colors.background,
-                    topBar = { ToolbarSection(
-                        navController = navController,
-                        title = when(currentRoute(navController = navController)){
-                            Screens.AddItem.route  -> Screens.AddItem.title
-                            BottomNavItems.Cart.route  -> BottomNavItems.Cart.title
-                            BottomNavItems.Home.route  -> BottomNavItems.Home.title
-                            else -> ""
-                        },
-                        actionIcon = when(currentRoute(navController = navController)){
-                            Screens.AddItem.route  -> null
-                            BottomNavItems.Cart.route  -> Icons.Filled.MoreVert
-                            BottomNavItems.Home.route  -> Icons.Filled.Search
-                            else -> null
-                        },
-                        showArrowBack = currentRoute(navController = navController) == Screens.AddItem.route
-                    ) },
+                    topBar = {
+                        ToolbarSection(
+                            navController = navController,
+                            title = when (currentRoute(navController = navController)) {
+                                Screens.AddItemScreen.route -> Screens.AddItemScreen.title
+                                BottomNavItems.CartScreen.route -> BottomNavItems.CartScreen.title
+                                BottomNavItems.HomeScreen.route -> BottomNavItems.HomeScreen.title
+                                else -> ""
+                            },
+                            actionIcon = when (currentRoute(navController = navController)) {
+                                Screens.AddItemScreen.route -> null
+                                BottomNavItems.CartScreen.route -> Icons.Filled.MoreVert
+                                BottomNavItems.HomeScreen.route -> Icons.Filled.Search
+                                else -> null
+                            },
+                            isSearchToolbar = currentRoute(navController = navController) == Screens.SearchScreen.route,
+                            showArrowBack = when (currentRoute(navController = navController)) {
+                                Screens.AddItemScreen.route -> true
+                                Screens.SearchScreen.route -> true
+                                else -> false
+                            },
+                            onActionIconClick = {
+                                navController.navigate(Screens.SearchScreen.route)
+                            }
+                        )
+                    },
                     bottomBar = {
-                        if (currentRoute(navController = navController) != Screens.AddItem.route) {
+                        if (currentRoute(navController = navController) != Screens.AddItemScreen.route) {
                             BottomBarSection(
                                 navController = navController,
                                 items = listOf(
-                                    BottomNavItems.Home,
-                                    BottomNavItems.Cart
+                                    BottomNavItems.HomeScreen,
+                                    BottomNavItems.CartScreen
                                 )
                             )
-                        }
 
+                        }
                     },
 
                     floatingActionButton = {
-                        if (currentRoute(navController = navController) != Screens.AddItem.route) {
+                        if (currentRoute(navController = navController) != Screens.AddItemScreen.route) {
                             FabSection(navController)
                         }
                     },
@@ -87,16 +93,19 @@ class MainActivity : ComponentActivity() {
                 ) {
                     NavHost(
                         navController = navController,
-                        startDestination = BottomNavItems.Home.route
+                        startDestination = BottomNavItems.HomeScreen.route
                     ) {
-                        composable(route = BottomNavItems.Home.route) {
+                        composable(route = BottomNavItems.HomeScreen.route) {
                             HomeScreen(navController)
                         }
-                        composable(route = BottomNavItems.Cart.route) {
+                        composable(route = BottomNavItems.CartScreen.route) {
                             CartScreen()
                         }
-                        composable(route = Screens.AddItem.route) {
+                        composable(route = Screens.AddItemScreen.route) {
                             AddItemScreen()
+                        }
+                        composable(route = Screens.SearchScreen.route) {
+                            SearchScreen(navController = navController)
                         }
                     }
                 }
@@ -106,7 +115,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
- fun currentRoute(navController: NavController): String? {
+fun currentRoute(navController: NavController): String? {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     return navBackStackEntry?.destination?.route
 }

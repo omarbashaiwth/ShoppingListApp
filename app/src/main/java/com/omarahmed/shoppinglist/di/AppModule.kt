@@ -1,7 +1,9 @@
 package com.omarahmed.shoppinglist.di
 
-import com.omarahmed.shoppinglist.data.remote.ShoppingListApi
-import com.omarahmed.shoppinglist.presentation.util.Constants.BASE_URL
+import com.omarahmed.shoppinglist.core.data.remote.ShoppingListApi
+import com.omarahmed.shoppinglist.core.util.Constants.BASE_URL
+import com.omarahmed.shoppinglist.feature_list.data.repository.ShoppingLisRepoImpl
+import com.omarahmed.shoppinglist.feature_list.domain.repository.ShoppingListRepo
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,5 +24,11 @@ object AppModule {
             .baseUrl(BASE_URL)
             .build()
             .create(ShoppingListApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideRepository(api: ShoppingListApi): ShoppingListRepo {
+        return ShoppingLisRepoImpl(api)
     }
 }

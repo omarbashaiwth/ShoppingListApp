@@ -1,6 +1,7 @@
 package com.omarahmed.shoppinglist.core.data.remote
 
 import com.omarahmed.shoppinglist.core.data.model.ShoppingItem
+import com.omarahmed.shoppinglist.core.util.Resource
 import retrofit2.http.GET
 import retrofit2.http.Query
 

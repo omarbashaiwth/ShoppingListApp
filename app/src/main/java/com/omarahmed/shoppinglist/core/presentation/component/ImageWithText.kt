@@ -9,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.omarahmed.shoppinglist.R
 import com.omarahmed.shoppinglist.core.data.model.ShoppingItem
@@ -17,6 +18,7 @@ import com.omarahmed.shoppinglist.core.presentation.ui.theme.LargeSpace
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.MediumSpace
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.SmallSpace
 
+@ExperimentalCoilApi
 @Composable
 fun ImageWithText(
     item: ShoppingItem
@@ -30,7 +32,7 @@ fun ImageWithText(
     ) {
         Image(
             painter = rememberImagePainter(data = item.imageUrl) {
-                crossfade(2000)
+                crossfade(500)
                 placeholder(R.drawable.ic_cart)
             },
             contentDescription = item.name,

@@ -11,9 +11,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
-import com.omarahmed.shoppinglist.feature_list.presentation.components.ShoppingItem
+import com.omarahmed.shoppinglist.feature_list.presentation.screen_home.components.ShoppingItem
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.*
+import com.omarahmed.shoppinglist.core.presentation.util.UiEvent
 import kotlinx.coroutines.flow.collectLatest
 
 
@@ -28,7 +28,7 @@ fun HomeScreen(
     LaunchedEffect(key1 = true){
         viewModel.eventFlow.collectLatest { event ->
             when(event){
-                is HomeViewModel.UiEvent.ShowSnackbar -> {
+                is UiEvent.ShowSnackbar -> {
                     scaffoldState.snackbarHostState.showSnackbar(
                         message = event.message
                     )

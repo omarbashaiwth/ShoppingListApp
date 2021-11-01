@@ -4,6 +4,8 @@ import com.omarahmed.shoppinglist.core.data.remote.ShoppingListApi
 import com.omarahmed.shoppinglist.core.util.Constants.BASE_URL
 import com.omarahmed.shoppinglist.feature_list.data.repository.ShoppingLisRepoImpl
 import com.omarahmed.shoppinglist.feature_list.domain.repository.ShoppingListRepo
+import com.omarahmed.shoppinglist.feature_search.data.repository.SearchRepoImpl
+import com.omarahmed.shoppinglist.feature_search.domain.repository.SearchRepo
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -30,5 +32,11 @@ object AppModule {
     @Singleton
     fun provideRepository(api: ShoppingListApi): ShoppingListRepo {
         return ShoppingLisRepoImpl(api)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSearchRepo(api: ShoppingListApi): SearchRepo {
+        return SearchRepoImpl(api)
     }
 }

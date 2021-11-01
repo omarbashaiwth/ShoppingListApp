@@ -1,4 +1,4 @@
-package com.omarahmed.shoppinglist.feature_list.presentation.components
+package com.omarahmed.shoppinglist.feature_list.presentation.screen_home.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*

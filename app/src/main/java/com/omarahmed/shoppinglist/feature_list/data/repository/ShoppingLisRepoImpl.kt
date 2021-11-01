@@ -18,9 +18,9 @@ class ShoppingLisRepoImpl @Inject constructor(
             Resource.Success(shoppingItem)
 
         } catch (e: IOException){
-            Resource.Error("Couldn't reach the server. Try again later")
+            Resource.Error("Couldn't reach the server. Check your Internet connection")
         } catch (e: HttpException) {
-            Resource.Error("Something went wrong")
+            Resource.Error("Something went wrong. Please try again later")
         }
     }
 }

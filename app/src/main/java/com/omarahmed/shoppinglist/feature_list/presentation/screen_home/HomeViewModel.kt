@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.omarahmed.shoppinglist.core.data.remote.ShoppingListApi
+import com.omarahmed.shoppinglist.core.presentation.util.UiEvent
 import com.omarahmed.shoppinglist.core.util.Resource
 import com.omarahmed.shoppinglist.feature_list.domain.repository.ShoppingListRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -45,10 +46,6 @@ class HomeViewModel @Inject constructor(
                 }
             }
         }
-    }
-
-    sealed class UiEvent{
-        data class ShowSnackbar(val message: String): UiEvent()
     }
 
 }

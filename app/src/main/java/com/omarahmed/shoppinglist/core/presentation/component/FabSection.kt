@@ -1,4 +1,4 @@
-package com.omarahmed.shoppinglist.feature_list.presentation.components
+package com.omarahmed.shoppinglist.core.presentation.component
 
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.FloatingActionButton
@@ -11,16 +11,22 @@ import androidx.navigation.NavController
 import com.omarahmed.shoppinglist.core.util.Screens
 
 @Composable
-fun FabSection(navController: NavController) {
-    FloatingActionButton(
-        onClick = { navController.navigate(Screens.AddItemScreen.route)},
-        shape = CircleShape,
-        backgroundColor = MaterialTheme.colors.primary
-    ) {
-        Icon(
-            imageVector = Icons.Filled.Add,
-            contentDescription = "Add item",
-            tint = MaterialTheme.colors.onBackground
-        )
+fun FabSection(
+    navController: NavController,
+    showFabButton: Boolean
+) {
+    if (showFabButton){
+        FloatingActionButton(
+            onClick = { navController.navigate(Screens.AddItemScreen.route)},
+            shape = CircleShape,
+            backgroundColor = MaterialTheme.colors.primary
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Add,
+                contentDescription = "Add item",
+                tint = MaterialTheme.colors.onBackground
+            )
+        }
     }
+
 }

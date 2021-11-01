@@ -1,27 +1,62 @@
 package com.omarahmed.shoppinglist.feature_search.presentation
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.omarahmed.shoppinglist.core.data.remote.ShoppingListApi
+import com.omarahmed.shoppinglist.core.domain.states.TextFieldState
+import com.omarahmed.shoppinglist.core.presentation.util.UiEvent
+import com.omarahmed.shoppinglist.core.util.Resource
 import com.omarahmed.shoppinglist.feature_list.presentation.screen_home.ShoppingListState
+import com.omarahmed.shoppinglist.feature_search.domain.repository.SearchRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val api: ShoppingListApi
+    private val searchRepo: SearchRepo
 ):ViewModel() {
 
-    private val _querySearchState = mutableStateOf("")
-    val querySearchState: State<String> = _querySearchState
+    private val _searchQuery = mutableStateOf(TextFieldState())
+    val searchQuery: State<TextFieldState> = _searchQuery
 
-    fun setQuery(query: String ) {
-        _querySearchState.value = query
+    private val _state = mutableStateOf(SearchState())
+    val state: State<SearchState> = _state
+
+    private val _eventFlow = MutableSharedFlow<UiEvent>()
+    val eventFlow = _eventFlow.asSharedFlow()
+
+    fun onEvent(event: SearchEvent){
+        when(event){
+            is SearchEvent.EnteredQuery -> {
+                _searchQuery.value = _searchQuery.value.copy(
+                    text = event.query
+                )
+            }
+            is SearchEvent.Search -> {
+                viewModelScope.launch {
+                    _state.value = _state.value.copy(isLoading = true)
+                   when(val result = searchRepo.getSearchResult(_searchQuery.value.text)){
+                       is Resource.Success -> {
+                           _state.value = _state.value.copy(
+                               searchResult = result.data ?: emptyList(),
+                               isLoading = false
+                           )
+
+                       }
+                       is Resource.Error -> {
+                           _eventFlow.emit(UiEvent.ShowSnackbar(result.message ?: "Unknown error occurred"))
+                           _state.value = _state.value.copy(searchResult = emptyList(), isLoading = false)
+                       }
+                   }
+                }
+
+            }
+        }
     }
-
-    private val _state = mutableStateOf(ShoppingListState())
-    val state: State<ShoppingListState> = _state
-
-
 }

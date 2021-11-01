@@ -1,4 +1,4 @@
-package com.omarahmed.shoppinglist.feature_list.presentation.components
+package com.omarahmed.shoppinglist.core.presentation.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -26,43 +26,47 @@ import com.omarahmed.shoppinglist.core.util.BottomNavItems
 
 @Composable
 fun BottomBarSection(
+    showBottomBar: Boolean,
     navController: NavController,
     items: List<BottomNavItems>
 ) {
-    BottomAppBar(
-        cutoutShape = CircleShape,
-        modifier = Modifier
-            .clip(
-                RoundedCornerShape(
-                    topStart = LargeCornerRadius,
-                    topEnd = LargeCornerRadius
-                )
-            ),
-    ) {
-        val backStackEntry by navController.currentBackStackEntryAsState()
-        val curRoute = backStackEntry?.destination?.route
-        items.forEach { item ->
-            BottomNavigationItem(
-                icon = {
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(SmallCornerRadius))
-                            .background(if (curRoute == item.route) GreenAccent else Color.Transparent)
-                            .padding(5.dp)
-                    ) {
-                        Icon(
-                            painter = painterResource(id = item.icon),
-                            contentDescription = item.title,
-                            tint = MaterialTheme.colors.onBackground
-                        )
+    if (showBottomBar){
+        BottomAppBar(
+            cutoutShape = CircleShape,
+            modifier = Modifier
+                .clip(
+                    RoundedCornerShape(
+                        topStart = LargeCornerRadius,
+                        topEnd = LargeCornerRadius
+                    )
+                ),
+        ) {
+            val backStackEntry by navController.currentBackStackEntryAsState()
+            val curRoute = backStackEntry?.destination?.route
+            items.forEach { item ->
+                BottomNavigationItem(
+                    icon = {
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(SmallCornerRadius))
+                                .background(if (curRoute == item.route) GreenAccent else Color.Transparent)
+                                .padding(5.dp)
+                        ) {
+                            Icon(
+                                painter = painterResource(id = item.icon),
+                                contentDescription = item.title,
+                                tint = MaterialTheme.colors.onBackground
+                            )
+                        }
+                    },
+                    selected = curRoute == item.route,
+                    onClick = {
+                        navController.navigate(item.route)
                     }
-                },
-                selected = curRoute == item.route,
-                onClick = {
-                    navController.navigate(item.route)
-                }
-            )
+                )
+            }
         }
     }
+
 }

@@ -21,9 +21,9 @@ import androidx.navigation.compose.rememberNavController
 import com.omarahmed.shoppinglist.feature_list.presentation.screen_add_item.AddItemScreen
 import com.omarahmed.shoppinglist.presentation.cart.CartScreen
 import com.omarahmed.shoppinglist.feature_list.presentation.screen_home.HomeScreen
-import com.omarahmed.shoppinglist.feature_list.presentation.components.BottomBarSection
-import com.omarahmed.shoppinglist.feature_list.presentation.components.FabSection
-import com.omarahmed.shoppinglist.feature_list.presentation.components.ToolbarSection
+import com.omarahmed.shoppinglist.core.presentation.component.BottomBarSection
+import com.omarahmed.shoppinglist.core.presentation.component.FabSection
+import com.omarahmed.shoppinglist.core.presentation.component.ToolbarSection
 import com.omarahmed.shoppinglist.feature_search.presentation.SearchScreen
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.*
 import com.omarahmed.shoppinglist.core.util.BottomNavItems
@@ -61,10 +61,9 @@ class MainActivity : ComponentActivity() {
                                 BottomNavItems.HomeScreen.route -> Icons.Filled.Search
                                 else -> null
                             },
-                            isSearchToolbar = currentRoute(navController = navController) == Screens.SearchScreen.route,
+                            showToolbar = currentRoute(navController = navController) != Screens.SearchScreen.route,
                             showArrowBack = when (currentRoute(navController = navController)) {
                                 Screens.AddItemScreen.route -> true
-                                Screens.SearchScreen.route -> true
                                 else -> false
                             },
                             onActionIconClick = {
@@ -73,22 +72,30 @@ class MainActivity : ComponentActivity() {
                         )
                     },
                     bottomBar = {
-                        if (currentRoute(navController = navController) != Screens.AddItemScreen.route) {
-                            BottomBarSection(
-                                navController = navController,
-                                items = listOf(
-                                    BottomNavItems.HomeScreen,
-                                    BottomNavItems.CartScreen
-                                )
+                        BottomBarSection(
+                            showBottomBar = when (currentRoute(navController = navController)) {
+                                Screens.AddItemScreen.route -> false
+                                Screens.SearchScreen.route -> false
+                                else -> true
+                            },
+                            navController = navController,
+                            items = listOf(
+                                BottomNavItems.HomeScreen,
+                                BottomNavItems.CartScreen
                             )
-
-                        }
+                        )
                     },
 
                     floatingActionButton = {
-                        if (currentRoute(navController = navController) != Screens.AddItemScreen.route) {
-                            FabSection(navController)
-                        }
+                        FabSection(
+                            navController = navController,
+                            showFabButton = when (currentRoute(navController = navController)) {
+                                Screens.AddItemScreen.route -> false
+                                Screens.SearchScreen.route -> false
+                                else -> true
+                            }
+                        )
+
                     },
                     floatingActionButtonPosition = FabPosition.Center,
                     isFloatingActionButtonDocked = true
@@ -107,7 +114,9 @@ class MainActivity : ComponentActivity() {
                             AddItemScreen()
                         }
                         composable(route = Screens.SearchScreen.route) {
-                            SearchScreen()
+                            SearchScreen(scaffoldState = scaffoldState){
+                                navController.popBackStack()
+                            }
                         }
                     }
                 }

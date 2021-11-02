@@ -7,7 +7,10 @@ import retrofit2.http.Query
 
 interface ShoppingListApi {
     @GET("/api/items/get")
-    suspend fun getAllItems(): List<ShoppingItem>
+    suspend fun getAllItems(
+        @Query("page") page: Int,
+        @Query("pageSize") pageSize: Int
+    ): List<ShoppingItem>
 
     @GET("/api/items/search")
     suspend fun searchForItem(

@@ -1,6 +1,7 @@
 package com.omarahmed.shoppinglist.feature_search.presentation.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,6 +15,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
@@ -39,17 +41,18 @@ fun SearchTextField(
     val focusRequester = remember {
         FocusRequester()
     }
-    Row(modifier = Modifier.fillMaxWidth()) {
-        Box(modifier = Modifier
-            .clip(CircleShape)
-            .background(color = MaterialTheme.colors.surface)
-        ) {
-            IconButton(
-                imageVector = Icons.Filled.ArrowBack,
-                contentDescription = stringResource(id = R.string.back),
-                onClick = {onBackClick()}
-            )
-        }
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color = MaterialTheme.colors.surface),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        IconButton(
+            imageVector = Icons.Filled.ArrowBack,
+            contentDescription = stringResource(id = R.string.back),
+            onClick = { onBackClick() }
+        )
+
         TextField(
             value = searchQuery,
             onValueChange = {
@@ -69,10 +72,7 @@ fun SearchTextField(
             }),
             modifier = modifier
                 .fillMaxWidth()
-                .focusRequester(focusRequester)
-                .onFocusChanged {
-
-                },
+                .focusRequester(focusRequester),
             colors = TextFieldDefaults.textFieldColors(
                 unfocusedIndicatorColor = Color.Transparent,
                 focusedIndicatorColor = Color.Transparent,

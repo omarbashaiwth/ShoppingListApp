@@ -32,7 +32,6 @@ fun HomeScreen(
     scaffoldState: ScaffoldState,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
-    val state = viewModel.state.value
     val allItems = viewModel.items.collectAsLazyPagingItems()
 
     LaunchedEffect(key1 = true) {

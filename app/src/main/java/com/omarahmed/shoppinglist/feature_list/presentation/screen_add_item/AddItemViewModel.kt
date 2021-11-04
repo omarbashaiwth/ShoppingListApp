@@ -13,8 +13,17 @@ class AddItemViewModel @Inject constructor(): ViewModel() {
     private val _itemNameState = mutableStateOf(TextFieldState())
     val itemNameState: State<TextFieldState> = _itemNameState
 
-    fun setItemName(state: TextFieldState) {
-        _itemNameState.value = state
+    fun onEvent(event: AddItemEvent){
+        when(event){
+            is AddItemEvent.EnteredName -> {
+                _itemNameState.value = _itemNameState.value.copy(
+                    text = event.name
+                )
+            }
+            is AddItemEvent.SaveItem -> {
+
+            }
+        }
     }
 
 }

@@ -22,8 +22,6 @@ class HomeViewModel @Inject constructor(
     private val shoppingListRepo: ShoppingListRepo
 ):ViewModel() {
 
-    private val _state = mutableStateOf(ShoppingListState())
-    val state: State<ShoppingListState> = _state
 
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()

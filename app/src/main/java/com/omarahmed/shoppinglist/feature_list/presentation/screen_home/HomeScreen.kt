@@ -14,16 +14,20 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.SemanticsProperties.Text
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
+import com.omarahmed.shoppinglist.R
 import com.omarahmed.shoppinglist.feature_list.presentation.screen_home.components.ShoppingItem
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.*
 import com.omarahmed.shoppinglist.core.presentation.util.UiEvent
 import com.omarahmed.shoppinglist.feature_list.util.items
 import kotlinx.coroutines.flow.collectLatest
+import retrofit2.HttpException
+import java.io.IOException
 
 
 @ExperimentalFoundationApi
@@ -34,17 +38,7 @@ fun HomeScreen(
 ) {
     val allItems = viewModel.items.collectAsLazyPagingItems()
 
-    LaunchedEffect(key1 = true) {
-        viewModel.eventFlow.collectLatest { event ->
-            when (event) {
-                is UiEvent.ShowSnackbar -> {
-                    scaffoldState.snackbarHostState.showSnackbar(
-                        message = event.message
-                    )
-                }
-            }
-        }
-    }
+
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -58,29 +52,39 @@ fun HomeScreen(
                 top = SmallSpace
             ),
         ) {
-            if (allItems.loadState.refresh == LoadState.Loading) {
-                item {
-                    CircularProgressIndicator(modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentWidth(CenterHorizontally))
-                }
-
-            }
             items(allItems.itemCount) { index ->
                 allItems[index]?.let {
                     ShoppingItem(shoppingItem = it)
                 }
             }
-            if (allItems.loadState.append == LoadState.Loading) {
-                item {
-                    CircularProgressIndicator(modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentWidth(Alignment.CenterHorizontally))
-                }
-            }
 
         }
-
+        when {
+            allItems.loadState.refresh is LoadState.Loading -> {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentWidth(CenterHorizontally)
+                )
+            }
+            allItems.loadState.append is LoadState.Loading -> {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                )
+            }
+            allItems.loadState.refresh is LoadState.Error -> {
+                LaunchedEffect(key1 = true) {
+                    val e = allItems.loadState.refresh as LoadState.Error
+                    val msg = when(e.error){
+                        is IOException -> "Couldn't reach the server. Check your Internet connection"
+                        is HttpException -> "Something went wrong. Please, try again later"
+                        else -> "Unknown error occurred"
+                    }
+                    scaffoldState.snackbarHostState.showSnackbar(message = msg)
+                }
+            }
+        }
     }
 }
 

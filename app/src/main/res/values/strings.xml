@@ -11,4 +11,5 @@
     <string name="item_name">Item name</string>
     <string name="click_to_add_item_image">Click to add item image</string>
     <string name="add">Add</string>
+    <string name="delete_image">Delete</string>
 </resources>

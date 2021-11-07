@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import coil.annotation.ExperimentalCoilApi
 import com.omarahmed.shoppinglist.R
 import com.omarahmed.shoppinglist.core.data.model.ShoppingItem
 import com.omarahmed.shoppinglist.presentation.shared.IconButton
@@ -21,6 +22,7 @@ import com.omarahmed.shoppinglist.core.presentation.ui.theme.ButtonHeight
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.LargeCornerRadius
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.SmallSpace
 
+@ExperimentalCoilApi
 @Composable
 fun ShoppingItem(
     shoppingItem: ShoppingItem,

@@ -1,4 +1,4 @@
-package com.omarahmed.shoppinglist.feature_list.data.paing
+package com.omarahmed.shoppinglist.feature_list.data.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState

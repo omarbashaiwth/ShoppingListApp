@@ -62,6 +62,7 @@ fun BottomBarSection(
                     },
                     selected = curRoute == item.route,
                     onClick = {
+                        navController.popBackStack()
                         navController.navigate(item.route)
                     }
                 )

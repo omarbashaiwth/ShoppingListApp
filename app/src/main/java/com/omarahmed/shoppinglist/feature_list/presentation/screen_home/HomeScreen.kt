@@ -38,7 +38,6 @@ fun HomeScreen(
 ) {
     val allItems = viewModel.items.collectAsLazyPagingItems()
 
-
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center

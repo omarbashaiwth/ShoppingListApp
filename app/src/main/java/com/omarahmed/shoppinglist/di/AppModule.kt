@@ -1,5 +1,7 @@
 package com.omarahmed.shoppinglist.di
 
+import android.content.Context
+import com.google.gson.Gson
 import com.omarahmed.shoppinglist.core.data.remote.ShoppingListApi
 import com.omarahmed.shoppinglist.core.util.Constants.BASE_URL
 import com.omarahmed.shoppinglist.feature_list.data.repository.ShoppingLisRepoImpl
@@ -9,6 +11,7 @@ import com.omarahmed.shoppinglist.feature_search.domain.repository.SearchRepo
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -30,8 +33,18 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideRepository(api: ShoppingListApi): ShoppingListRepo {
-        return ShoppingLisRepoImpl(api)
+    fun provideRepository(
+        api: ShoppingListApi,
+        gson: Gson,
+        @ApplicationContext appContext: Context
+    ): ShoppingListRepo {
+        return ShoppingLisRepoImpl(api, gson, appContext)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGson(): Gson{
+        return Gson()
     }
 
     @Provides

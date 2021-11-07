@@ -1,5 +1,6 @@
 package com.omarahmed.shoppinglist.feature_list.presentation.screen_home
 
+import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -21,31 +22,10 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val shoppingListRepo: ShoppingListRepo
 ):ViewModel() {
+    val imageUriState = mutableStateOf<Uri?>(null)
 
-
-    private val _eventFlow = MutableSharedFlow<UiEvent>()
-    val eventFlow = _eventFlow.asSharedFlow()
 
     val items = shoppingListRepo.allItems.cachedIn(viewModelScope)
 
-
-
-//    private fun getAllItems(){
-//        viewModelScope.launch {
-//            _state.value = _state.value.copy(isLoading = true)
-//            when(val result = shoppingListRepo.getAllItems()){
-//                is Resource.Success -> {
-//                    _state.value = _state.value.copy(
-//                        shoppingItem = result.data ?: emptyList(),
-//                        isLoading = false
-//                    )
-//                }
-//                is Resource.Error -> {
-//                    _eventFlow.emit(UiEvent.ShowSnackbar(result.message ?: "Unknown error occurred"))
-//                    _state.value = _state.value.copy(isLoading = false)
-//                }
-//            }
-//        }
-//    }
 
 }

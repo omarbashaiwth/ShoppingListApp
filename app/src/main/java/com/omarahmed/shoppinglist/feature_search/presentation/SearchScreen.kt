@@ -10,6 +10,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.annotation.ExperimentalCoilApi
 import com.omarahmed.shoppinglist.feature_list.presentation.screen_home.components.ShoppingItem
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.SmallSpace
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.SuperLargeSpace
@@ -18,6 +19,7 @@ import com.omarahmed.shoppinglist.feature_search.presentation.components.SearchT
 import kotlinx.coroutines.flow.collectLatest
 
 
+@ExperimentalCoilApi
 @ExperimentalFoundationApi
 @Composable
 fun SearchScreen(

@@ -9,20 +9,19 @@ import java.io.IOException
 
 class SearchRepoImpl(
     private val api: ShoppingListApi
-): SearchRepo {
+) : SearchRepo {
     override suspend fun getSearchResult(query: String?): Resource<List<ShoppingItem>> {
         return try {
-            query?.let {
-                val result = api.searchForItem(query)
-                if (result.isNotEmpty()){
+            if (query?.trim().isNullOrEmpty()) {
+                Resource.Error("Please, write something to search")
+            } else {
+                val result = api.searchForItem(query!!)
+                if (result.isNotEmpty()) {
                     Resource.Success(result)
                 } else {
                     Resource.Error("No result..Try searching using another query")
                 }
-            } ?: Resource.Error("Please, write something to search")
-
-
-
+            }
         } catch (e: IOException) {
             Resource.Error("Couldn't reach the server. Check your Internet connection")
         } catch (e: HttpException) {

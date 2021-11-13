@@ -54,8 +54,6 @@ class MainActivity : ComponentActivity() {
                                 else -> ""
                             },
                             actionIcon = when (currentRoute(navController = navController)) {
-                                Screens.AddItemScreen.route -> null
-                                BottomNavItems.CartScreen.route -> Icons.Filled.MoreVert
                                 BottomNavItems.HomeScreen.route -> Icons.Filled.Search
                                 else -> null
                             },

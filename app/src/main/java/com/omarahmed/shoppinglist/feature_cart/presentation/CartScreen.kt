@@ -4,6 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.LocalContentAlpha
+import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
@@ -13,14 +15,13 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.LifecycleOwner
 import coil.annotation.ExperimentalCoilApi
 import com.omarahmed.shoppinglist.core.data.model.ShoppingItem
 import com.omarahmed.shoppinglist.R
-import com.omarahmed.shoppinglist.presentation.shared.IconButton
+import com.omarahmed.shoppinglist.core.presentation.component.IconButton
 import com.omarahmed.shoppinglist.core.presentation.component.ImageWithText
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.*
 import com.omarahmed.shoppinglist.feature_cart.data.entity.CartEntity
@@ -39,14 +40,17 @@ fun CartScreen(viewModel: CartViewModel = hiltViewModel()) {
         )
     ) {
         items(allItems.size) {
-            CartItem(cartItem = allItems[it])
+            CartItem(cartItem = allItems[it], viewModel = viewModel)
         }
     }
 }
 
 @ExperimentalCoilApi
 @Composable
-fun CartItem(cartItem: CartEntity) {
+fun CartItem(
+    cartItem: CartEntity,
+    viewModel: CartViewModel
+) {
     val shoppingItem = ShoppingItem(
         name = cartItem.itemName,
         imageUrl = cartItem.itemIconUrl,
@@ -78,13 +82,20 @@ fun CartItem(cartItem: CartEntity) {
         ) {
             IconButton(
                 modifier = Modifier.size(ButtonHeight),
+                tintColor = if (cartItem.isBought) Color.Yellow else LocalContentColor.current.copy(alpha = LocalContentAlpha.current),
                 imageVector = Icons.Default.CheckCircle,
-                contentDescription = stringResource(id = R.string.already_bought)
+                contentDescription = stringResource(id = R.string.already_bought),
+                onClick = {
+                    viewModel.onBoughtStateChange(cartItem)
+                }
             )
             IconButton(
                 modifier = Modifier.size(ButtonHeight),
                 imageVector = Icons.Default.Delete,
-                contentDescription = stringResource(id = R.string.remove)
+                contentDescription = stringResource(id = R.string.remove),
+                onClick = {
+                    viewModel.deleteItem(cartItem)
+                }
             )
         }
     }

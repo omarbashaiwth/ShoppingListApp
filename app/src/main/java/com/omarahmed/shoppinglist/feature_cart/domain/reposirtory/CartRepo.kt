@@ -9,4 +9,8 @@ interface CartRepo {
 
     val getAllItems: Flow<List<CartEntity>>
 
+    suspend fun deleteItem(item: CartEntity)
+
+    suspend fun updateItem(item: CartEntity)
+
 }

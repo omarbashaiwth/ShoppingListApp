@@ -1,11 +1,9 @@
 package com.omarahmed.shoppinglist.feature_cart.data
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.omarahmed.shoppinglist.feature_cart.data.entity.CartEntity
 import kotlinx.coroutines.flow.Flow
+import retrofit2.http.DELETE
 
 @Dao
 interface CartDao {
@@ -15,4 +13,13 @@ interface CartDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertItem(item: CartEntity)
+
+    @Query("DELETE FROM shopping_items")
+    suspend fun deleteAllItems()
+
+    @Delete
+    suspend fun deleteItem(item: CartEntity)
+
+    @Update
+    suspend fun updateItem(item: CartEntity)
 }

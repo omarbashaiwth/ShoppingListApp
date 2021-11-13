@@ -17,4 +17,12 @@ class CartRepoImpl @Inject constructor(
 
     override val getAllItems: Flow<List<CartEntity>>
         get() = dao.getAllItems()
+
+    override suspend fun deleteItem(item: CartEntity) {
+        dao.deleteItem(item)
+    }
+
+    override suspend fun updateItem(item: CartEntity) {
+        dao.updateItem(item)
+    }
 }

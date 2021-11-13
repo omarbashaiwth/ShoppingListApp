@@ -16,7 +16,7 @@ import androidx.compose.ui.res.stringResource
 import coil.annotation.ExperimentalCoilApi
 import com.omarahmed.shoppinglist.R
 import com.omarahmed.shoppinglist.core.data.model.ShoppingItem
-import com.omarahmed.shoppinglist.presentation.shared.IconButton
+import com.omarahmed.shoppinglist.core.presentation.component.IconButton
 import com.omarahmed.shoppinglist.core.presentation.component.ImageWithText
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.ButtonHeight
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.LargeCornerRadius

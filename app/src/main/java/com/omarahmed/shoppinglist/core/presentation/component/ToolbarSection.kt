@@ -16,7 +16,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.omarahmed.shoppinglist.R
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.LargeCornerRadius
-import com.omarahmed.shoppinglist.presentation.shared.IconButton
 
 @Composable
 fun ToolbarSection(

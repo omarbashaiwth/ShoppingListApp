@@ -15,16 +15,10 @@ import javax.inject.Inject
 @HiltViewModel
 class CartViewModel @Inject constructor(
     private val repo: CartRepo
-): ViewModel() {
+) : ViewModel() {
 
     private val _allItems = MutableLiveData<List<CartEntity>>(emptyList())
     val allItems = _allItems
-
-    fun insertItem(item: CartEntity){
-        viewModelScope.launch {
-            repo.insertItem(item)
-        }
-    }
 
     init {
         viewModelScope.launch {
@@ -34,4 +28,19 @@ class CartViewModel @Inject constructor(
         }
     }
 
+    fun insertItem(item: CartEntity) = viewModelScope.launch {
+        repo.insertItem(item)
+    }
+
+    fun deleteItem(item: CartEntity) = viewModelScope.launch {
+        repo.deleteItem(item)
+    }
+
+    fun onBoughtStateChange(cartEntity: CartEntity) {
+        val currentBoughtState = cartEntity.isBought
+        val updatedItemCart = cartEntity.copy(isBought = !currentBoughtState)
+        viewModelScope.launch {
+            repo.updateItem(updatedItemCart)
+        }
+    }
 }

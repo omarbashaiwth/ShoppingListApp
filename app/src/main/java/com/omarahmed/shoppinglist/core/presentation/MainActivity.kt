@@ -1,10 +1,8 @@
 package com.omarahmed.shoppinglist.core.presentation
 
-import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.FabPosition
 import androidx.compose.material.MaterialTheme
@@ -15,7 +13,6 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -23,7 +20,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import coil.annotation.ExperimentalCoilApi
 import com.omarahmed.shoppinglist.feature_list.presentation.screen_add_item.AddItemScreen
-import com.omarahmed.shoppinglist.presentation.cart.CartScreen
+import com.omarahmed.shoppinglist.feature_cart.presentation.CartScreen
 import com.omarahmed.shoppinglist.feature_list.presentation.screen_home.HomeScreen
 import com.omarahmed.shoppinglist.core.presentation.component.BottomBarSection
 import com.omarahmed.shoppinglist.core.presentation.component.FabSection

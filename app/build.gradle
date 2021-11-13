@@ -71,6 +71,10 @@ dependencies {
     //Compose
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.16.1"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0"
+    implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
+
+
 
 
     //Navigation
@@ -93,5 +97,10 @@ dependencies {
 
     //Paging 3.0
     implementation 'androidx.paging:paging-compose:1.0.0-alpha14'
+
+    //ROOM
+    implementation "androidx.room:room-runtime:2.3.0"
+    kapt "androidx.room:room-compiler:2.3.0"
+    implementation "androidx.room:room-ktx:2.3.0"
 
 }

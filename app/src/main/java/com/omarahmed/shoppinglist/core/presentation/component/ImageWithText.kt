@@ -1,4 +1,4 @@
-package com.omarahmed.shoppinglist.presentation.shared
+package com.omarahmed.shoppinglist.core.presentation.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -17,12 +17,17 @@ import com.omarahmed.shoppinglist.core.presentation.ui.theme.ImageSize
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.LargeSpace
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.MediumSpace
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.SmallSpace
+import com.omarahmed.shoppinglist.feature_cart.data.entity.CartEntity
 
 @ExperimentalCoilApi
 @Composable
 fun ImageWithText(
     item: ShoppingItem
 ) {
+    val cartEntity = CartEntity(
+        itemName = item.name,
+        itemIconUrl = item.imageUrl ?: ""
+    )
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding(
@@ -31,16 +36,16 @@ fun ImageWithText(
         )
     ) {
         Image(
-            painter = rememberImagePainter(data = item.imageUrl) {
+            painter = rememberImagePainter(data = cartEntity.itemIconUrl) {
                 crossfade(500)
                 placeholder(R.drawable.ic_cart)
             },
-            contentDescription = item.name,
+            contentDescription = cartEntity.itemName,
             modifier = Modifier.size(ImageSize)
         )
         Spacer(modifier = Modifier.height(SmallSpace))
         Text(
-            text = item.name,
+            text = cartEntity.itemName,
             style = MaterialTheme.typography.h1,
             modifier = Modifier.fillMaxWidth(),
             overflow = TextOverflow.Ellipsis,

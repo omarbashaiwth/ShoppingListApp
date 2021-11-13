@@ -17,7 +17,7 @@ import coil.annotation.ExperimentalCoilApi
 import com.omarahmed.shoppinglist.R
 import com.omarahmed.shoppinglist.core.data.model.ShoppingItem
 import com.omarahmed.shoppinglist.presentation.shared.IconButton
-import com.omarahmed.shoppinglist.presentation.shared.ImageWithText
+import com.omarahmed.shoppinglist.core.presentation.component.ImageWithText
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.ButtonHeight
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.LargeCornerRadius
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.SmallSpace
@@ -26,6 +26,7 @@ import com.omarahmed.shoppinglist.core.presentation.ui.theme.SmallSpace
 @Composable
 fun ShoppingItem(
     shoppingItem: ShoppingItem,
+    onAddItemClick: ((shoppingItem: ShoppingItem) -> Unit)? = null
 ) {
     var isAddedToCart by remember {
         mutableStateOf(shoppingItem.isAddedToCart)
@@ -53,6 +54,9 @@ fun ShoppingItem(
                 .size(ButtonHeight),
             onClick = {
                 isAddedToCart = !isAddedToCart
+                if (onAddItemClick != null) {
+                    onAddItemClick(shoppingItem)
+                }
             },
             imageVector = if (isAddedToCart) Icons.Default.Check else Icons.Default.Add,
             contentDescription = if (isAddedToCart) stringResource(id = R.string.remove) else stringResource(

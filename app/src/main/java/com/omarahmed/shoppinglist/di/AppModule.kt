@@ -1,9 +1,16 @@
 package com.omarahmed.shoppinglist.di
 
 import android.content.Context
+import androidx.room.Room
+import androidx.room.RoomDatabase
 import com.google.gson.Gson
+import com.omarahmed.shoppinglist.feature_cart.data.CartDao
+import com.omarahmed.shoppinglist.feature_cart.data.CartDatabase
 import com.omarahmed.shoppinglist.core.data.remote.ShoppingListApi
+import com.omarahmed.shoppinglist.core.util.Constants
 import com.omarahmed.shoppinglist.core.util.Constants.BASE_URL
+import com.omarahmed.shoppinglist.feature_cart.data.repository.CartRepoImpl
+import com.omarahmed.shoppinglist.feature_cart.domain.reposirtory.CartRepo
 import com.omarahmed.shoppinglist.feature_list.data.repository.ShoppingLisRepoImpl
 import com.omarahmed.shoppinglist.feature_list.domain.repository.ShoppingListRepo
 import com.omarahmed.shoppinglist.feature_search.data.repository.SearchRepoImpl
@@ -51,5 +58,29 @@ object AppModule {
     @Singleton
     fun provideSearchRepo(api: ShoppingListApi): SearchRepo {
         return SearchRepoImpl(api)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDatabase(
+        @ApplicationContext appContext: Context,
+    ): CartDatabase {
+        return Room.databaseBuilder(
+            appContext,
+            CartDatabase::class.java,
+            Constants.DATABASE_NAME
+        ).build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideDao(db: CartDatabase): CartDao {
+        return db.itemDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideCartRepo(dao: CartDao): CartRepo{
+        return CartRepoImpl(dao)
     }
 }

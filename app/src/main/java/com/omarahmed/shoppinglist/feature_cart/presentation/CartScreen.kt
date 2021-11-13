@@ -1,4 +1,4 @@
-package com.omarahmed.shoppinglist.presentation.cart
+package com.omarahmed.shoppinglist.feature_cart.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -9,24 +9,27 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.LifecycleOwner
+import coil.annotation.ExperimentalCoilApi
 import com.omarahmed.shoppinglist.core.data.model.ShoppingItem
 import com.omarahmed.shoppinglist.R
 import com.omarahmed.shoppinglist.presentation.shared.IconButton
-import com.omarahmed.shoppinglist.presentation.shared.ImageWithText
+import com.omarahmed.shoppinglist.core.presentation.component.ImageWithText
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.*
+import com.omarahmed.shoppinglist.feature_cart.data.entity.CartEntity
 
+@ExperimentalCoilApi
 @Composable
-fun CartScreen() {
-    val cartItems = listOf(
-        ShoppingItem("Tomato", "", id = ""),
-        ShoppingItem("Garlic", "", id = ""),
-        ShoppingItem("Chicken", "",id = ""),
-        ShoppingItem("Rice", "", id = "")
-    )
+fun CartScreen(viewModel: CartViewModel = hiltViewModel()) {
+
+    val allItems = viewModel.allItems.observeAsState(listOf()).value
     LazyColumn(
         contentPadding = PaddingValues(
             bottom = SuperLargeSpace,
@@ -35,14 +38,20 @@ fun CartScreen() {
             top = SmallSpace
         )
     ) {
-        items(cartItems.size) {
-            CartItem(cartItem = cartItems[it])
+        items(allItems.size) {
+            CartItem(cartItem = allItems[it])
         }
     }
 }
 
+@ExperimentalCoilApi
 @Composable
-fun CartItem(cartItem: ShoppingItem) {
+fun CartItem(cartItem: CartEntity) {
+    val shoppingItem = ShoppingItem(
+        name = cartItem.itemName,
+        imageUrl = cartItem.itemIconUrl,
+        id = cartItem.itemId.toString()
+    )
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
@@ -51,7 +60,7 @@ fun CartItem(cartItem: ShoppingItem) {
             .clip(RoundedCornerShape(LargeCornerRadius))
             .background(MaterialTheme.colors.surface)
     ) {
-        ImageWithText(cartItem)
+        ImageWithText(shoppingItem)
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceAround,

@@ -1,9 +1,7 @@
 package com.omarahmed.shoppinglist.feature_list.data.repository
 
-import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
-import androidx.core.net.toFile
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -14,6 +12,8 @@ import com.omarahmed.shoppinglist.core.presentation.util.getFileName
 import com.omarahmed.shoppinglist.core.util.Constants
 import com.omarahmed.shoppinglist.core.util.Resource
 import com.omarahmed.shoppinglist.feature_list.data.dto.request.AddItemRequest
+import com.omarahmed.shoppinglist.feature_list.data.dto.request.UpdateItemRequest
+import com.omarahmed.shoppinglist.feature_list.data.dto.response.SimpleResponse
 import com.omarahmed.shoppinglist.feature_list.data.paging.ItemsSource
 import com.omarahmed.shoppinglist.feature_list.domain.repository.ShoppingListRepo
 import kotlinx.coroutines.Dispatchers
@@ -81,6 +81,26 @@ class ShoppingLisRepoImpl @Inject constructor(
             } else {
                 Resource.Error(response.message)
             }
+        } catch (e:IOException){
+            Resource.Error("Oops! Couldn't reach the server. Check your Internet connection")
+        } catch (e: HttpException){
+            Resource.Error("Oops! Something went wrong. Please, try again")
+        }
+    }
+
+    override suspend fun updateItem(
+        itemId: String,
+        isAddedToCart: Boolean
+    ): Resource<ShoppingItem> {
+        val request = UpdateItemRequest(isAddedToCart)
+        return try {
+            val response = api.updateItem(itemId = itemId, request = request)
+            if (response.success){
+                Resource.Success(response.data)
+            } else {
+                Resource.Error(response.message)
+            }
+
         } catch (e:IOException){
             Resource.Error("Oops! Couldn't reach the server. Check your Internet connection")
         } catch (e: HttpException){

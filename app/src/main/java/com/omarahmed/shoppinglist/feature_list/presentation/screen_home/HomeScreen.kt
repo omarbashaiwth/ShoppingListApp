@@ -47,14 +47,15 @@ fun HomeScreen(
             ),
         ) {
             items(allItems.itemCount) { index ->
-                allItems[index]?.let {
-                    ShoppingItem(shoppingItem = it){ item ->
+                allItems[index]?.let {item ->
+                    ShoppingItem(shoppingItem = item) {
                         cartViewModel.insertItem(
                             CartEntity(
                                 itemName = item.name,
                                 itemIconUrl = item.imageUrl ?: ""
                             )
                         )
+                        homeViewModel.updateItem(item)
                     }
                 }
             }

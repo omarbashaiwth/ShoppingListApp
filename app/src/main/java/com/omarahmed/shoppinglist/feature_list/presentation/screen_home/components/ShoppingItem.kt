@@ -26,7 +26,7 @@ import com.omarahmed.shoppinglist.core.presentation.ui.theme.SmallSpace
 @Composable
 fun ShoppingItem(
     shoppingItem: ShoppingItem,
-    onAddItemClick: ((shoppingItem: ShoppingItem) -> Unit)? = null
+    onAddItemClick: () -> Unit = {}
 ) {
     var isAddedToCart by remember {
         mutableStateOf(shoppingItem.isAddedToCart)
@@ -54,9 +54,7 @@ fun ShoppingItem(
                 .size(ButtonHeight),
             onClick = {
                 isAddedToCart = !isAddedToCart
-                if (onAddItemClick != null) {
-                    onAddItemClick(shoppingItem)
-                }
+                onAddItemClick()
             },
             imageVector = if (isAddedToCart) Icons.Default.Check else Icons.Default.Add,
             contentDescription = if (isAddedToCart) stringResource(id = R.string.remove) else stringResource(

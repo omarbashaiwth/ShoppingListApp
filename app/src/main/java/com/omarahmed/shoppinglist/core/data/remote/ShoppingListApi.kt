@@ -3,6 +3,7 @@ package com.omarahmed.shoppinglist.core.data.remote
 import com.omarahmed.shoppinglist.core.data.model.ShoppingItem
 import com.omarahmed.shoppinglist.core.util.Resource
 import com.omarahmed.shoppinglist.feature_list.data.dto.request.AddItemRequest
+import com.omarahmed.shoppinglist.feature_list.data.dto.request.UpdateItemRequest
 import com.omarahmed.shoppinglist.feature_list.data.dto.response.SimpleResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -27,4 +28,11 @@ interface ShoppingListApi {
         @Part postData: MultipartBody.Part,
         @Part postImage: MultipartBody.Part
     ): SimpleResponse<Unit>
+
+
+    @PUT("/api/item/update")
+    suspend fun updateItem(
+        @Query("itemId") itemId: String,
+        @Body request: UpdateItemRequest
+    ): SimpleResponse<ShoppingItem>
 }

@@ -1,7 +1,5 @@
 package com.omarahmed.shoppinglist.feature_cart.presentation
 
-import androidx.compose.runtime.collectAsState
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -32,8 +30,8 @@ class CartViewModel @Inject constructor(
         repo.insertItem(item)
     }
 
-    fun deleteItem(item: CartEntity) = viewModelScope.launch {
-        repo.deleteItem(item)
+    fun deleteItem(itemId: String) = viewModelScope.launch {
+        repo.deleteItem(itemId)
     }
 
     fun onBoughtStateChange(cartEntity: CartEntity) {

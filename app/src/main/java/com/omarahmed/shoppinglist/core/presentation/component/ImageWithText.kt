@@ -26,7 +26,8 @@ fun ImageWithText(
 ) {
     val cartEntity = CartEntity(
         itemName = item.name,
-        itemIconUrl = item.imageUrl ?: ""
+        itemIconUrl = item.imageUrl ?: "",
+        itemId = item.id
     )
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,

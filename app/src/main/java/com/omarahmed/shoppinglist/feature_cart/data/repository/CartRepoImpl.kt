@@ -1,7 +1,6 @@
 package com.omarahmed.shoppinglist.feature_cart.data.repository
 
 import com.omarahmed.shoppinglist.feature_cart.data.CartDao
-import com.omarahmed.shoppinglist.feature_cart.data.CartDatabase
 import com.omarahmed.shoppinglist.feature_cart.data.entity.CartEntity
 import com.omarahmed.shoppinglist.feature_cart.domain.reposirtory.CartRepo
 import kotlinx.coroutines.flow.Flow
@@ -18,8 +17,8 @@ class CartRepoImpl @Inject constructor(
     override val getAllItems: Flow<List<CartEntity>>
         get() = dao.getAllItems()
 
-    override suspend fun deleteItem(item: CartEntity) {
-        dao.deleteItem(item)
+    override suspend fun deleteItem(itemId: String) {
+        dao.deleteItem(itemId)
     }
 
     override suspend fun updateItem(item: CartEntity) {

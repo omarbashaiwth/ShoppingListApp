@@ -49,12 +49,18 @@ fun HomeScreen(
             items(allItems.itemCount) { index ->
                 allItems[index]?.let {item ->
                     ShoppingItem(shoppingItem = item) {
-                        cartViewModel.insertItem(
-                            CartEntity(
-                                itemName = item.name,
-                                itemIconUrl = item.imageUrl ?: ""
+                        if (!item.isAddedToCart){
+                            cartViewModel.insertItem(
+                                CartEntity(
+                                    itemName = item.name,
+                                    itemIconUrl = item.imageUrl ?: "",
+                                    itemId = item.id
+                                )
                             )
-                        )
+                        } else {
+                            cartViewModel.deleteItem(item.id)
+                        }
+
                         homeViewModel.updateItem(item)
                     }
                 }

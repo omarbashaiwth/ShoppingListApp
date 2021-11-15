@@ -14,6 +14,6 @@ data class CartEntity(
     val itemIconUrl: String,
     @ColumnInfo(name = "already_bought")
     val isBought: Boolean = false,
-    @PrimaryKey(autoGenerate = true)
-    val itemId: Long = 0L,
+    @PrimaryKey(autoGenerate = false)
+    val itemId: String,
 )

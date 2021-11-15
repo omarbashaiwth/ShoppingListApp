@@ -12,6 +12,8 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,12 +27,16 @@ import com.omarahmed.shoppinglist.core.presentation.component.IconButton
 import com.omarahmed.shoppinglist.core.presentation.component.ImageWithText
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.*
 import com.omarahmed.shoppinglist.feature_cart.data.entity.CartEntity
+import com.omarahmed.shoppinglist.feature_list.presentation.screen_home.HomeViewModel
 
 @ExperimentalCoilApi
 @Composable
-fun CartScreen(viewModel: CartViewModel = hiltViewModel()) {
+fun CartScreen(
+    cartViewModel: CartViewModel = hiltViewModel(),
+    homeViewModel: HomeViewModel = hiltViewModel()
+) {
 
-    val allItems = viewModel.allItems.observeAsState(listOf()).value
+    val allItems = cartViewModel.allItems.observeAsState(listOf()).value
     LazyColumn(
         contentPadding = PaddingValues(
             bottom = SuperLargeSpace,
@@ -40,7 +46,11 @@ fun CartScreen(viewModel: CartViewModel = hiltViewModel()) {
         )
     ) {
         items(allItems.size) {
-            CartItem(cartItem = allItems[it], viewModel = viewModel)
+            CartItem(
+                cartItem = allItems[it],
+                cartViewModel = cartViewModel,
+                homeViewModel = homeViewModel
+            )
         }
     }
 }
@@ -49,8 +59,12 @@ fun CartScreen(viewModel: CartViewModel = hiltViewModel()) {
 @Composable
 fun CartItem(
     cartItem: CartEntity,
-    viewModel: CartViewModel
+    cartViewModel: CartViewModel,
+    homeViewModel: HomeViewModel
 ) {
+    val isDeleted = remember {
+        mutableStateOf(false)
+    }
     val shoppingItem = ShoppingItem(
         name = cartItem.itemName,
         imageUrl = cartItem.itemIconUrl,
@@ -86,7 +100,7 @@ fun CartItem(
                 imageVector = Icons.Default.CheckCircle,
                 contentDescription = stringResource(id = R.string.already_bought),
                 onClick = {
-                    viewModel.onBoughtStateChange(cartItem)
+                    cartViewModel.onBoughtStateChange(cartItem)
                 }
             )
             IconButton(
@@ -94,7 +108,17 @@ fun CartItem(
                 imageVector = Icons.Default.Delete,
                 contentDescription = stringResource(id = R.string.remove),
                 onClick = {
-                    viewModel.deleteItem(cartItem)
+                    isDeleted.value = true
+                    cartViewModel.deleteItem(cartItem.itemId)
+                    homeViewModel.updateItem(
+                        ShoppingItem(
+                          name = cartItem.itemName,
+                          imageUrl = cartItem.itemIconUrl,
+                          isAddedToCart = isDeleted.value,
+                          id = cartItem.itemId
+                        )
+                    )
+
                 }
             )
         }

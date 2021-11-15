@@ -15,6 +15,9 @@ import com.omarahmed.shoppinglist.feature_list.presentation.screen_home.componen
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.SmallSpace
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.SuperLargeSpace
 import com.omarahmed.shoppinglist.core.presentation.util.UiEvent
+import com.omarahmed.shoppinglist.feature_cart.data.entity.CartEntity
+import com.omarahmed.shoppinglist.feature_cart.presentation.CartViewModel
+import com.omarahmed.shoppinglist.feature_list.presentation.screen_home.HomeViewModel
 import com.omarahmed.shoppinglist.feature_search.presentation.components.SearchTextField
 import kotlinx.coroutines.flow.collectLatest
 
@@ -24,6 +27,8 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun SearchScreen(
     searchViewModel: SearchViewModel = hiltViewModel(),
+    cartViewModel: CartViewModel = hiltViewModel(),
+    homeViewModel: HomeViewModel = hiltViewModel(),
     scaffoldState: ScaffoldState,
     onBackClick: () -> Unit
 ) {
@@ -61,7 +66,22 @@ fun SearchScreen(
                 ),
             ) {
                 items(state.searchResult.size) {
-                    ShoppingItem(shoppingItem = state.searchResult[it])
+                    val searchResult = state.searchResult[it]
+                    ShoppingItem(shoppingItem = searchResult){
+                        if (!searchResult.isAddedToCart){
+                            cartViewModel.insertItem(
+                                CartEntity(
+                                    itemName = searchResult.name,
+                                    itemIconUrl = searchResult.imageUrl ?: "",
+                                    itemId = searchResult.id
+                                )
+                            )
+                        } else {
+                            cartViewModel.deleteItem(searchResult.id)
+                        }
+
+                        homeViewModel.updateItem(searchResult)
+                    }
                 }
 
             }

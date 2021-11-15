@@ -1,5 +1,6 @@
 package com.omarahmed.shoppinglist.feature_cart.presentation
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -7,6 +8,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
@@ -18,7 +20,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.annotation.ExperimentalCoilApi
 import com.omarahmed.shoppinglist.core.data.model.ShoppingItem
@@ -37,22 +41,41 @@ fun CartScreen(
 ) {
 
     val allItems = cartViewModel.allItems.observeAsState(listOf()).value
-    LazyColumn(
-        contentPadding = PaddingValues(
-            bottom = SuperLargeSpace,
-            start = SmallSpace,
-            end = SmallSpace,
-            top = SmallSpace
-        )
+    Box(
+        modifier = Modifier.fillMaxSize()
     ) {
-        items(allItems.size) {
-            CartItem(
-                cartItem = allItems[it],
-                cartViewModel = cartViewModel,
-                homeViewModel = homeViewModel
+        if (allItems.isEmpty()){
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.align(Alignment.Center)
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.empty_cart),
+                    contentDescription = null,
+                    modifier = Modifier.size(100.dp)
+                )
+                Spacer(modifier = Modifier.height(SmallSpace))
+                Text(text = stringResource(R.string.empty_cart))
+            }
+        }
+        LazyColumn(
+            contentPadding = PaddingValues(
+                bottom = SuperLargeSpace,
+                start = SmallSpace,
+                end = SmallSpace,
+                top = SmallSpace
             )
+        ) {
+            items(allItems.size) {
+                CartItem(
+                    cartItem = allItems[it],
+                    cartViewModel = cartViewModel,
+                    homeViewModel = homeViewModel
+                )
+            }
         }
     }
+
 }
 
 @ExperimentalCoilApi
@@ -68,7 +91,7 @@ fun CartItem(
     val shoppingItem = ShoppingItem(
         name = cartItem.itemName,
         imageUrl = cartItem.itemIconUrl,
-        id = cartItem.itemId.toString()
+        id = cartItem.itemId
     )
     Box(
         contentAlignment = Alignment.Center,

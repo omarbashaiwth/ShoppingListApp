@@ -12,4 +12,5 @@
     <string name="click_to_add_item_image">Click to add item image</string>
     <string name="add">Add</string>
     <string name="delete_image">Delete</string>
+    <string name="empty_cart">Your cart is currently empty</string>
 </resources>

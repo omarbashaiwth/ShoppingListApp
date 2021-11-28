@@ -15,6 +15,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.annotation.ExperimentalCoilApi
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.omarahmed.shoppinglist.feature_list.presentation.screen_home.components.ShoppingItem
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.*
 import com.omarahmed.shoppinglist.feature_cart.data.entity.CartEntity
@@ -37,19 +39,38 @@ fun HomeScreen(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        LazyVerticalGrid(
-            cells = GridCells.Fixed(2),
-            contentPadding = PaddingValues(
-                bottom = SuperLargeSpace,
-                start = SmallSpace,
-                end = SmallSpace,
-                top = SmallSpace
-            ),
+        SwipeRefresh(
+            state = rememberSwipeRefreshState(isRefreshing = allItems.loadState.refresh is LoadState.Loading),
+            onRefresh = {allItems.refresh()},
+            modifier = Modifier.fillMaxSize()
         ) {
-            items(allItems.itemCount) { index ->
-                allItems[index]?.let {item ->
-                    ShoppingItem(shoppingItem = item) {
-                        if (!item.isAddedToCart){
+            LazyVerticalGrid(
+                cells = GridCells.Fixed(2),
+                contentPadding = PaddingValues(
+                    bottom = SuperLargeSpace,
+                    start = SmallSpace,
+                    end = SmallSpace,
+                    top = SmallSpace
+                ),
+            ) {
+                items(allItems.itemCount) { index ->
+                    allItems[index]?.let {item ->
+                        ShoppingItem(shoppingItem = item) {
+                            homeViewModel.updateItem(item)
+                            if (item.isAddedToCart){
+                                cartViewModel.insertItem(
+                                    CartEntity(
+                                        itemName = item.name,
+                                        itemIconUrl = item.imageUrl ?: "",
+                                        itemId = item.id
+                                    )
+                                )
+
+                            } else {
+                                cartViewModel.deleteItem(item.id)
+                            }
+                        }
+                        if (item.isAddedToCart){
                             cartViewModel.insertItem(
                                 CartEntity(
                                     itemName = item.name,
@@ -57,29 +78,19 @@ fun HomeScreen(
                                     itemId = item.id
                                 )
                             )
+
                         } else {
                             cartViewModel.deleteItem(item.id)
                         }
-
-                        homeViewModel.updateItem(item)
                     }
                 }
-            }
 
-        }
-        when {
-            allItems.loadState.refresh is LoadState.Loading -> {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentWidth(CenterHorizontally)
-                )
             }
+        }
+        
+        when {
             allItems.loadState.append is LoadState.Loading -> {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                )
+                CircularProgressIndicator()
             }
             allItems.loadState.refresh is LoadState.Error -> {
                 LaunchedEffect(key1 = true) {

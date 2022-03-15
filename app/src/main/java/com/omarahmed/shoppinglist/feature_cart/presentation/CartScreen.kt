@@ -13,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,18 +30,23 @@ import com.omarahmed.shoppinglist.core.data.model.ShoppingItem
 import com.omarahmed.shoppinglist.R
 import com.omarahmed.shoppinglist.core.presentation.component.IconButton
 import com.omarahmed.shoppinglist.core.presentation.component.ImageWithText
+import com.omarahmed.shoppinglist.core.presentation.component.TopBarSection
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.*
 import com.omarahmed.shoppinglist.feature_cart.data.entity.CartEntity
 import com.omarahmed.shoppinglist.feature_list.presentation.screen_home.HomeViewModel
+import com.ramcosta.composedestinations.annotation.Destination
 
 @ExperimentalCoilApi
+@Destination
 @Composable
 fun CartScreen(
     cartViewModel: CartViewModel = hiltViewModel(),
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
+    val allItems by cartViewModel.allItems.observeAsState(listOf())
 
-    val allItems = cartViewModel.allItems.observeAsState(listOf()).value
+    TopBarSection(title = stringResource(id = R.string.cart))
+
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -75,7 +81,6 @@ fun CartScreen(
             }
         }
     }
-
 }
 
 @ExperimentalCoilApi
@@ -141,11 +146,9 @@ fun CartItem(
                           id = cartItem.itemId
                         )
                     )
-
                 }
             )
         }
     }
-
 }
 

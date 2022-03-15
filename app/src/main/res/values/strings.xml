@@ -13,4 +13,5 @@
     <string name="add">Add</string>
     <string name="delete_image">Delete</string>
     <string name="empty_cart">Your cart is currently empty</string>
+    <string name="home">Home</string>
 </resources>

@@ -19,21 +19,25 @@ import com.omarahmed.shoppinglist.feature_cart.data.entity.CartEntity
 import com.omarahmed.shoppinglist.feature_cart.presentation.CartViewModel
 import com.omarahmed.shoppinglist.feature_list.presentation.screen_home.HomeViewModel
 import com.omarahmed.shoppinglist.feature_search.presentation.components.SearchTextField
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.flow.collectLatest
 
 
 @ExperimentalCoilApi
 @ExperimentalFoundationApi
+@Destination
 @Composable
 fun SearchScreen(
     searchViewModel: SearchViewModel = hiltViewModel(),
     cartViewModel: CartViewModel = hiltViewModel(),
     homeViewModel: HomeViewModel = hiltViewModel(),
-    scaffoldState: ScaffoldState,
-    onBackClick: () -> Unit
+    navigator: DestinationsNavigator,
+    hideBottomNav: Boolean = true
 ) {
     val state = searchViewModel.state.value
     val searchQuery = searchViewModel.searchQuery.value
+    val scaffoldState = rememberScaffoldState()
 
     LaunchedEffect(key1 = true) {
         searchViewModel.eventFlow.collectLatest { event ->
@@ -53,7 +57,7 @@ fun SearchScreen(
         Column {
             SearchTextField(
                 searchQuery = searchQuery.text ?: "",
-                onBackClick = onBackClick
+                onBackClick = {navigator.popBackStack()}
             )
             Spacer(modifier = Modifier.height(SmallSpace))
             LazyVerticalGrid(
@@ -67,8 +71,8 @@ fun SearchScreen(
             ) {
                 items(state.searchResult.size) {
                     val searchResult = state.searchResult[it]
-                    ShoppingItem(shoppingItem = searchResult){
-                        if (!searchResult.isAddedToCart){
+                    ShoppingItem(shoppingItem = searchResult) {
+                        if (!searchResult.isAddedToCart) {
                             cartViewModel.insertItem(
                                 CartEntity(
                                     itemName = searchResult.name,
@@ -83,9 +87,7 @@ fun SearchScreen(
                         homeViewModel.updateItem(searchResult)
                     }
                 }
-
             }
         }
-
     }
 }

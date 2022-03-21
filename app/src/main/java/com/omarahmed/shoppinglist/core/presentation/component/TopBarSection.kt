@@ -8,6 +8,8 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -21,10 +23,12 @@ import com.omarahmed.shoppinglist.core.presentation.ui.theme.LargeCornerRadius
 fun TopBarSection(
     modifier: Modifier = Modifier,
     title: String,
-    actionIcon: ImageVector? = null,
     navigationIcon: ImageVector? = null,
-    onActionIconClick: () -> Unit = {},
-    onArrowBackClick: () -> Unit = {}
+    onArrowBackClick: () -> Unit = {},
+    showActionIcons: Boolean = false,
+    onSearchIconClick: () -> Unit = {},
+    onMenuIconClick: () -> Unit = {},
+    dropDownMenu: @Composable () -> Unit = {}
 ) {
     TopAppBar(
         modifier = modifier
@@ -42,14 +46,20 @@ fun TopBarSection(
             )
         },
         actions = {
-            actionIcon?.let {
+            if (showActionIcons) {
                 IconButton(
-                    imageVector = it,
-                    contentDescription = title,
-                    onClick = onActionIconClick
+                    imageVector = Icons.Default.Search,
+                    contentDescription = stringResource(id = R.string.search),
+                    onClick = onSearchIconClick
                 )
-            }
+                IconButton(
+                    imageVector = Icons.Default.MoreVert,
+                    contentDescription = stringResource(R.string.more_oprions),
+                    onClick = onMenuIconClick
+                )
+                dropDownMenu()
 
+            }
         },
         navigationIcon = navigationIcon?.let {
             {

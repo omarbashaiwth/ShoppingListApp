@@ -29,7 +29,7 @@ class DataStoreManager @Inject constructor(
             it[tokenKey] ?: ""
         }
 
-    suspend fun logout(){
+    suspend fun clearDataStore(){
         context.dataStore.edit { it.clear() }
     }
 }

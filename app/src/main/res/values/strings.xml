@@ -29,4 +29,6 @@
     <string name="already_have_account">Already have an account?</string>
     <string name="dont_have_account">Don\'t have an account?</string>
     <string name="not_log_in">You are not legged in</string>
+    <string name="more_oprions">more options</string>
+    <string name="logout">Logout</string>
 </resources>

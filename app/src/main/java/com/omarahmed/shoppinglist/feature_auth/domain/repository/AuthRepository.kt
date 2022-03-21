@@ -17,4 +17,6 @@ interface AuthRepository {
     ): Resource<LoginResponse>
 
     suspend fun authenticate(token: String?): Resource<Unit>
+
+    suspend fun logout()
 }

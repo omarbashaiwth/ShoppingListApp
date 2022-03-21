@@ -1,15 +1,14 @@
 package com.omarahmed.shoppinglist.feature_list.presentation.screen_home
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
-import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.rememberScaffoldState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -24,11 +23,14 @@ import com.omarahmed.shoppinglist.R
 import com.omarahmed.shoppinglist.core.presentation.component.TopBarSection
 import com.omarahmed.shoppinglist.feature_list.presentation.screen_home.components.ShoppingItem
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.*
+import com.omarahmed.shoppinglist.core.presentation.util.UiEvent
+import com.omarahmed.shoppinglist.destinations.LoginScreenDestination
 import com.omarahmed.shoppinglist.destinations.SearchScreenDestination
 import com.omarahmed.shoppinglist.feature_cart.data.entity.CartEntity
 import com.omarahmed.shoppinglist.feature_cart.presentation.CartViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kotlinx.coroutines.flow.collectLatest
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -44,7 +46,20 @@ fun HomeScreen(
 ) {
     val allItems = homeViewModel.items.collectAsLazyPagingItems()
     val scaffoldState = rememberScaffoldState()
+    var menuExpanded by remember {
+        mutableStateOf(false)
+    }
 
+    LaunchedEffect(key1 = Unit){
+        homeViewModel.events.collectLatest { event ->
+            when(event){
+                is UiEvent.Navigate -> {
+                    navigator.navigate(event.destination,)
+                }
+                is UiEvent.ShowSnackbar -> {}
+            }
+        }
+    }
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -52,8 +67,24 @@ fun HomeScreen(
     ) {
         TopBarSection(
             title = stringResource(id = R.string.home),
-            actionIcon = Icons.Default.Search,
-            onActionIconClick = {navigator.navigate(SearchScreenDestination())}
+            showActionIcons = true,
+            onSearchIconClick = {navigator.navigate(SearchScreenDestination())},
+            onMenuIconClick = { menuExpanded = true},
+            dropDownMenu = {
+                DropdownMenu(
+                    expanded = menuExpanded,
+                    onDismissRequest = { menuExpanded = false }
+                ) {
+                    DropdownMenuItem(
+                        onClick = {
+                            menuExpanded = false
+                            homeViewModel.logout()
+                        }
+                    ) {
+                        Text(text = stringResource(R.string.logout))
+                    }
+                }
+            }
         )
         SwipeRefresh(
             state = rememberSwipeRefreshState(isRefreshing = allItems.loadState.refresh is LoadState.Loading),

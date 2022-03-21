@@ -71,4 +71,8 @@ class AuthRepositoryImpl @Inject constructor(
             Resource.Error(context.getString(R.string.something_went_wrong))
         }
     }
+
+    override suspend fun logout() {
+        dataStoreManager.clearDataStore()
+    }
 }

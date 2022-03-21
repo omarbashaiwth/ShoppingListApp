@@ -8,6 +8,7 @@ import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -16,11 +17,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -31,6 +35,7 @@ import com.omarahmed.shoppinglist.core.presentation.component.StandardTextField
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.*
 import com.omarahmed.shoppinglist.core.presentation.util.UiEvent
 import com.omarahmed.shoppinglist.destinations.LoginScreenDestination
+import com.omarahmed.shoppinglist.destinations.RegisterScreenDestination
 import com.omarahmed.shoppinglist.feature_auth.presentation.util.AuthError
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -44,7 +49,7 @@ fun RegisterScreen(
     hideBottomNav: Boolean = true,
 ) {
     val scaffoldState = rememberScaffoldState()
-    val scrollableState = rememberScrollState()
+    val focusManager = LocalFocusManager.current
     val nameState by viewModel.name
     val emailState by viewModel.email
     val passwordState by viewModel.password
@@ -98,6 +103,10 @@ fun RegisterScreen(
                     }
                 },
                 leadingIcon = Icons.Filled.Person,
+                imeAction = ImeAction.Next,
+                keyboardActions = KeyboardActions(
+                    onNext = {focusManager.moveFocus(FocusDirection.Down)}
+                )
             )
             Spacer(modifier = Modifier.height(MediumSpace))
             StandardTextField(
@@ -111,7 +120,11 @@ fun RegisterScreen(
                 error = when (emailState.error) {
                     is AuthError.InvalidEmailError -> stringResource(id = R.string.invalid_email_msg)
                     else -> ""
-                }
+                },
+                imeAction = ImeAction.Next,
+                keyboardActions = KeyboardActions(
+                    onNext = {focusManager.moveFocus(FocusDirection.Down)}
+                )
             )
             Spacer(modifier = Modifier.height(MediumSpace))
             StandardTextField(
@@ -131,23 +144,12 @@ fun RegisterScreen(
                     is AuthError.TooShortInputError -> stringResource(id = R.string.too_short_password_msg)
                     is AuthError.InvalidPasswordError -> stringResource(id = R.string.invalid_password_msg)
                     else -> ""
-                }
-            )
-            Spacer(modifier = Modifier.height(LargeSpace))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Text(text = stringResource(R.string.already_have_account))
-                Spacer(modifier = Modifier.width(6.dp))
-                Text(
-                    text = stringResource(R.string.login),
-                    color = MaterialTheme.colors.primary,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.clickable { navigator.navigate(LoginScreenDestination()) }
+                },
+                imeAction = ImeAction.Done,
+                keyboardActions = KeyboardActions(
+                    onDone = {viewModel.onCreateUser()}
                 )
-            }
+            )
             Spacer(modifier = Modifier.height(SuperLargeSpace))
             Button(
                 onClick = {
@@ -160,6 +162,24 @@ fun RegisterScreen(
                     text = stringResource(id = R.string.register).uppercase(),
                     color = White,
                     modifier = Modifier.padding(SmallSpace)
+                )
+            }
+            Spacer(modifier = Modifier.height(LargeSpace))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(text = stringResource(R.string.already_have_account))
+                Spacer(modifier = Modifier.width(6.dp))
+                Text(
+                    text = stringResource(R.string.login),
+                    color = MaterialTheme.colors.primary,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.clickable {
+                        navigator.popBackStack(RegisterScreenDestination.route,true)
+                        navigator.navigate(LoginScreenDestination())
+                    }
                 )
             }
         }

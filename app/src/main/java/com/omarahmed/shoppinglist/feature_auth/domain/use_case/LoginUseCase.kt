@@ -15,12 +15,10 @@ class LoginUseCase @Inject constructor(
         password: String
     ): AuthResult<LoginResponse>{
         val emailError = ValidationUtil.validateEmail(email)
-        val passwordError = ValidationUtil.validatePassword(password)
 
-        if (emailError != null || passwordError != null) {
+        if (emailError != null) {
             return AuthResult(
                 emailError = emailError,
-                passwordError = passwordError
             )
         }
 

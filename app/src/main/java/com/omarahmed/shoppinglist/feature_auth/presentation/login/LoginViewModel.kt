@@ -79,10 +79,6 @@ class LoginViewModel @Inject constructor(
         if (loginResult.emailError != null) {
             emailState.value = emailState.value.copy(error = loginResult.emailError)
         }
-        if (loginResult.passwordError != null){
-            passwordState.value = passwordState.value.copy(error = loginResult.passwordError)
-        }
-
         when(loginResult.result) {
             is Resource.Success -> {
                 emailState.value = TextFieldState()
@@ -96,7 +92,6 @@ class LoginViewModel @Inject constructor(
             }
             null -> {
                 loadingState.value = false
-
             }
         }
 

@@ -24,6 +24,7 @@ import com.omarahmed.shoppinglist.core.presentation.component.TopBarSection
 import com.omarahmed.shoppinglist.feature_list.presentation.screen_home.components.ShoppingItem
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.*
 import com.omarahmed.shoppinglist.core.presentation.util.UiEvent
+import com.omarahmed.shoppinglist.destinations.HomeScreenDestination
 import com.omarahmed.shoppinglist.destinations.LoginScreenDestination
 import com.omarahmed.shoppinglist.destinations.SearchScreenDestination
 import com.omarahmed.shoppinglist.feature_cart.data.entity.CartEntity
@@ -54,6 +55,7 @@ fun HomeScreen(
         homeViewModel.events.collectLatest { event ->
             when(event){
                 is UiEvent.Navigate -> {
+                    navigator.popBackStack(HomeScreenDestination.route, true)
                     navigator.navigate(event.destination,)
                 }
                 is UiEvent.ShowSnackbar -> {}

@@ -9,11 +9,11 @@ import androidx.compose.ui.unit.sp
 import com.omarahmed.shoppinglist.R
 
 val quicksand = FontFamily(
-    Font(R.font.quicksand_light,FontWeight.Light),
-    Font(R.font.quicksand_reqular,FontWeight.Normal),
-    Font(R.font.quicksand_medium,FontWeight.Medium),
-    Font(R.font.quicksand_semibold,FontWeight.SemiBold),
-    Font(R.font.quicksand_bold,FontWeight.Bold)
+    Font(R.font.quicksand_light, FontWeight.Light),
+    Font(R.font.quicksand_reqular, FontWeight.Normal),
+    Font(R.font.quicksand_medium, FontWeight.Medium),
+    Font(R.font.quicksand_semibold, FontWeight.SemiBold),
+    Font(R.font.quicksand_bold, FontWeight.Bold)
 )
 val Typography = Typography(
     body1 = TextStyle(
@@ -24,7 +24,13 @@ val Typography = Typography(
     h1 = TextStyle(
         fontFamily = quicksand,
         fontWeight = FontWeight.SemiBold,
-        fontSize = 20.sp,
+        fontSize = 35.sp,
+        color = White
+    ),
+    h2 = TextStyle(
+        fontFamily = quicksand,
+        fontWeight = FontWeight.Normal,
+        fontSize = 18.sp,
         color = White
     )
 )

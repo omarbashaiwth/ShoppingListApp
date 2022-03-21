@@ -5,11 +5,10 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.omarahmed.shoppinglist.core.data.model.ShoppingItem
 import com.omarahmed.shoppinglist.core.domain.states.TextFieldState
 import com.omarahmed.shoppinglist.core.presentation.util.UiEvent
 import com.omarahmed.shoppinglist.core.util.Resource
-import com.omarahmed.shoppinglist.feature_list.data.dto.request.UpdateItemRequest
+import com.omarahmed.shoppinglist.destinations.LoginScreenDestination
 import com.omarahmed.shoppinglist.feature_list.domain.repository.ShoppingListRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -52,7 +51,7 @@ class AddItemViewModel @Inject constructor(
                     }
                     when(result){
                         is Resource.Success -> {
-                            _eventFlow.emit(UiEvent.Navigate())
+                            _eventFlow.emit(UiEvent.Navigate(LoginScreenDestination()))
                         }
                         is Resource.Error -> {
                             _eventFlow.emit(

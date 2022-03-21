@@ -1,12 +1,14 @@
 package com.omarahmed.shoppinglist.di
 
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import androidx.room.Room
-import androidx.room.RoomDatabase
 import com.google.gson.Gson
+import com.omarahmed.shoppinglist.core.data.DataStoreManager
 import com.omarahmed.shoppinglist.feature_cart.data.CartDao
 import com.omarahmed.shoppinglist.feature_cart.data.CartDatabase
-import com.omarahmed.shoppinglist.core.data.remote.ShoppingListApi
+import com.omarahmed.shoppinglist.feature_list.data.remote.ShoppingListApi
 import com.omarahmed.shoppinglist.core.util.Constants
 import com.omarahmed.shoppinglist.core.util.Constants.BASE_URL
 import com.omarahmed.shoppinglist.feature_cart.data.repository.CartRepoImpl
@@ -43,9 +45,10 @@ object AppModule {
     fun provideRepository(
         api: ShoppingListApi,
         gson: Gson,
-        @ApplicationContext appContext: Context
+        @ApplicationContext appContext: Context,
+        dataStoreManager: DataStoreManager
     ): ShoppingListRepo {
-        return ShoppingLisRepoImpl(api, gson, appContext)
+        return ShoppingLisRepoImpl(api, gson, appContext, dataStoreManager)
     }
 
     @Provides

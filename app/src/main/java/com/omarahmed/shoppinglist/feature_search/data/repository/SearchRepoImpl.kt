@@ -1,7 +1,7 @@
 package com.omarahmed.shoppinglist.feature_search.data.repository
 
 import com.omarahmed.shoppinglist.core.data.model.ShoppingItem
-import com.omarahmed.shoppinglist.core.data.remote.ShoppingListApi
+import com.omarahmed.shoppinglist.feature_list.data.remote.ShoppingListApi
 import com.omarahmed.shoppinglist.core.util.Resource
 import com.omarahmed.shoppinglist.feature_search.domain.repository.SearchRepo
 import retrofit2.HttpException
@@ -17,7 +17,7 @@ class SearchRepoImpl(
             } else {
                 val result = api.searchForItem(query!!)
                 if (result.isNotEmpty()) {
-                    Resource.Success(result)
+                    Resource.Success(null,result)
                 } else {
                     Resource.Error("No result..Try searching using another query")
                 }

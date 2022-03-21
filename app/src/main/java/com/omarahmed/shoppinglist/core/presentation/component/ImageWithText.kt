@@ -47,7 +47,7 @@ fun ImageWithText(
         Spacer(modifier = Modifier.height(SmallSpace))
         Text(
             text = cartEntity.itemName,
-            style = MaterialTheme.typography.h1,
+            style = MaterialTheme.typography.h2,
             modifier = Modifier.fillMaxWidth(),
             overflow = TextOverflow.Ellipsis,
             textAlign = TextAlign.Center

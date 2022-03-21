@@ -6,18 +6,20 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.google.gson.Gson
+import com.omarahmed.shoppinglist.R
+import com.omarahmed.shoppinglist.core.data.DataStoreManager
 import com.omarahmed.shoppinglist.core.data.model.ShoppingItem
-import com.omarahmed.shoppinglist.core.data.remote.ShoppingListApi
+import com.omarahmed.shoppinglist.feature_list.data.remote.ShoppingListApi
 import com.omarahmed.shoppinglist.core.presentation.util.getFileName
 import com.omarahmed.shoppinglist.core.util.Constants
 import com.omarahmed.shoppinglist.core.util.Resource
-import com.omarahmed.shoppinglist.feature_list.data.dto.request.AddItemRequest
-import com.omarahmed.shoppinglist.feature_list.data.dto.request.UpdateItemRequest
-import com.omarahmed.shoppinglist.feature_list.data.dto.response.SimpleResponse
+import com.omarahmed.shoppinglist.feature_list.data.remote.request.AddItemRequest
+import com.omarahmed.shoppinglist.feature_list.data.remote.request.UpdateItemRequest
 import com.omarahmed.shoppinglist.feature_list.data.paging.ItemsSource
 import com.omarahmed.shoppinglist.feature_list.domain.repository.ShoppingListRepo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -31,7 +33,8 @@ import javax.inject.Inject
 class ShoppingLisRepoImpl @Inject constructor(
     private val api: ShoppingListApi,
     private val gson: Gson,
-    private val appContext: Context
+    private val appContext: Context,
+    private val dataStoreManager: DataStoreManager
 ) : ShoppingListRepo {
 
     override val allItems: Flow<PagingData<ShoppingItem>>
@@ -41,7 +44,7 @@ class ShoppingLisRepoImpl @Inject constructor(
                 enablePlaceholders = true,
             )
         ) {
-            ItemsSource(api)
+            ItemsSource(api,dataStoreManager)
         }.flow
 
     override suspend fun addNewItem(
@@ -60,16 +63,17 @@ class ShoppingLisRepoImpl @Inject constructor(
                 inputStream.copyTo(outputStream)
                 file
             }
-        } ?: return Resource.Error("The file couldn't be found")
+        } ?: return Resource.Error(appContext.getString(R.string.file_couldnt_found))
 
         return try {
             val response = api.addNewItem(
-                postData = MultipartBody.Part
+                token = "Bearer ${dataStoreManager.getToken.first()}",
+                itemName = MultipartBody.Part
                     .createFormData(
-                        "adding_item_data",
-                        gson.toJson(request)
+                        name = "adding_item_data",
+                        value = request.itemName
                     ),
-                postImage = MultipartBody.Part
+                itemPicture = MultipartBody.Part
                     .createFormData(
                        name = "post_image",
                        filename = file.name,
@@ -77,14 +81,14 @@ class ShoppingLisRepoImpl @Inject constructor(
                     )
             )
             if (response.success){
-                Resource.Success(Unit)
+                Resource.Success(response.message)
             } else {
                 Resource.Error(response.message)
             }
         } catch (e:IOException){
-            Resource.Error("Oops! Couldn't reach the server. Check your Internet connection")
+            Resource.Error(appContext.getString(R.string.error_couldnt_reach_server))
         } catch (e: HttpException){
-            Resource.Error("Oops! Something went wrong. Please, try again")
+            Resource.Error(appContext.getString(R.string.something_went_wrong))
         }
     }
 
@@ -96,15 +100,15 @@ class ShoppingLisRepoImpl @Inject constructor(
         return try {
             val response = api.updateItem(itemId = itemId, request = request)
             if (response.success){
-                Resource.Success(response.data)
+                Resource.Success(response.message,response.data)
             } else {
                 Resource.Error(response.message)
             }
 
         } catch (e:IOException){
-            Resource.Error("Oops! Couldn't reach the server. Check your Internet connection")
+            Resource.Error(appContext.getString(R.string.error_couldnt_reach_server))
         } catch (e: HttpException){
-            Resource.Error("Oops! Something went wrong. Please, try again")
+            Resource.Error(appContext.getString(R.string.something_went_wrong))
         }
     }
 }

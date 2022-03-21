@@ -35,7 +35,7 @@ import java.io.IOException
 
 @ExperimentalCoilApi
 @ExperimentalFoundationApi
-@Destination(start = true)
+@Destination()
 @Composable
 fun HomeScreen(
     homeViewModel: HomeViewModel = hiltViewModel(),
@@ -45,15 +45,16 @@ fun HomeScreen(
     val allItems = homeViewModel.items.collectAsLazyPagingItems()
     val scaffoldState = rememberScaffoldState()
 
-    TopBarSection(
-        title = stringResource(id = R.string.home),
-        actionIcon = Icons.Default.Search,
-        onActionIconClick = {navigator.navigate(SearchScreenDestination())}
-    )
-    Box(
+
+    Column(
         modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        TopBarSection(
+            title = stringResource(id = R.string.home),
+            actionIcon = Icons.Default.Search,
+            onActionIconClick = {navigator.navigate(SearchScreenDestination())}
+        )
         SwipeRefresh(
             state = rememberSwipeRefreshState(isRefreshing = allItems.loadState.refresh is LoadState.Loading),
             onRefresh = {allItems.refresh()},
@@ -67,6 +68,7 @@ fun HomeScreen(
                     end = SmallSpace,
                     top = SmallSpace
                 ),
+                modifier = Modifier.fillMaxSize()
             ) {
                 items(allItems.itemCount) { index ->
                     allItems[index]?.let {item ->

@@ -73,8 +73,7 @@ fun AddItemScreen(
     )
 
     Column(
-        modifier = Modifier
-            .padding(MediumSpace),
+        modifier = Modifier.padding(MediumSpace),
     ) {
 
         Spacer(modifier = Modifier.height(SuperLargeSpace))
@@ -144,7 +143,7 @@ fun AddItemScreen(
             onClick = {
                 viewModel.onEvent(AddItemEvent.SaveItem)
             },
-            enabled = !state.text?.trim().isNullOrEmpty()
+            enabled = !state.text.trim().isNullOrEmpty()
         ) {
             Text(
                 text = stringResource(id = R.string.add),

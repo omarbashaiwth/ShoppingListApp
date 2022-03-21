@@ -19,6 +19,7 @@ import com.omarahmed.shoppinglist.core.presentation.ui.theme.LargeCornerRadius
 
 @Composable
 fun TopBarSection(
+    modifier: Modifier = Modifier,
     title: String,
     actionIcon: ImageVector? = null,
     navigationIcon: ImageVector? = null,
@@ -26,7 +27,7 @@ fun TopBarSection(
     onArrowBackClick: () -> Unit = {}
 ) {
     TopAppBar(
-        modifier = Modifier
+        modifier = modifier
             .clip(
                 RoundedCornerShape(
                     bottomStart = LargeCornerRadius,
@@ -37,7 +38,7 @@ fun TopBarSection(
         title = {
             Text(
                 text = title,
-                style = MaterialTheme.typography.h1
+                style = MaterialTheme.typography.h2
             )
         },
         actions = {

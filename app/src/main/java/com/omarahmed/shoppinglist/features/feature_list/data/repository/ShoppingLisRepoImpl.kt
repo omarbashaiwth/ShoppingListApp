@@ -49,36 +49,26 @@ class ShoppingLisRepoImpl @Inject constructor(
 
     override suspend fun addNewItem(
         itemName: String,
-        imageUri: Uri
+        itemIconUrl: String
     ): Resource<Unit> {
-        val request = AddItemRequest(itemName)
-        val file  = withContext(Dispatchers.IO){
-            appContext.contentResolver.openFileDescriptor(imageUri,"r")?.let { fd ->
-                val inputStream = FileInputStream(fd.fileDescriptor)
-                val file = File(
-                    appContext.cacheDir,
-                    appContext.contentResolver.getFileName(imageUri)
-                )
-                val outputStream = FileOutputStream(file)
-                inputStream.copyTo(outputStream)
-                file
-            }
-        } ?: return Resource.Error(appContext.getString(R.string.file_couldnt_found))
+        val request = AddItemRequest(itemName,itemIconUrl)
+//        val file  = withContext(Dispatchers.IO){
+//            appContext.contentResolver.openFileDescriptor(imageUri,"r")?.let { fd ->
+//                val inputStream = FileInputStream(fd.fileDescriptor)
+//                val file = File(
+//                    appContext.cacheDir,
+//                    appContext.contentResolver.getFileName(imageUri)
+//                )
+//                val outputStream = FileOutputStream(file)
+//                inputStream.copyTo(outputStream)
+//                file
+//            }
+//        } ?: return Resource.Error(appContext.getString(R.string.file_couldnt_found))
 
         return try {
             val response = api.addNewItem(
                 token = "Bearer ${dataStoreManager.getToken.first()}",
-                itemName = MultipartBody.Part
-                    .createFormData(
-                        name = "adding_item_data",
-                        value = request.itemName
-                    ),
-                itemPicture = MultipartBody.Part
-                    .createFormData(
-                       name = "post_image",
-                       filename = file.name,
-                       body = file.asRequestBody()
-                    )
+                request = request
             )
             if (response.success){
                 Resource.Success(response.message)

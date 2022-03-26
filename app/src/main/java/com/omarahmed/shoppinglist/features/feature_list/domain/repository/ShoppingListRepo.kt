@@ -10,7 +10,7 @@ interface ShoppingListRepo {
 
     val allItems: Flow<PagingData<ShoppingItem>>
 
-    suspend fun addNewItem(itemName: String, imageUri: Uri): Resource<Unit>
+    suspend fun addNewItem(itemName: String, itemIconUrl: String): Resource<Unit>
 
     suspend fun updateItem(itemId: String, isAddedToCart: Boolean): Resource<ShoppingItem>
 }

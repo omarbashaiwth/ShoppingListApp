@@ -38,7 +38,7 @@ import java.io.IOException
 fun HomeScreen(
     homeViewModel: HomeViewModel = hiltViewModel(),
     cartViewModel: CartViewModel = hiltViewModel(),
-    navigator: DestinationsNavigator
+    navigator: DestinationsNavigator,
 ) {
     val allItems = homeViewModel.items.collectAsLazyPagingItems()
     val scaffoldState = rememberScaffoldState()

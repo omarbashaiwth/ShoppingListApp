@@ -1,11 +1,6 @@
 package com.omarahmed.shoppinglist.features.feature_list.presentation.screen_add_item
 
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -34,27 +29,33 @@ import com.omarahmed.shoppinglist.core.util.Constants
 import com.omarahmed.shoppinglist.core.presentation.component.IconButton
 import com.omarahmed.shoppinglist.core.presentation.component.TopBarSection
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.*
+import com.omarahmed.shoppinglist.features.destinations.HomeScreenDestination
 import com.omarahmed.shoppinglist.features.destinations.IconSearchScreenDestination
+import com.omarahmed.shoppinglist.features.feature_list.data.remote.request.AddItemRequest
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavController
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.flow.collectLatest
 
+@OptIn(ExperimentalFoundationApi::class)
 @ExperimentalCoilApi
 @Destination
 @Composable
 fun AddItemScreen(
     viewModel: AddItemViewModel = hiltViewModel(),
     navigator: DestinationsNavigator,
-    hideBottomNav: Boolean = true
+    selectedIconUrl: String = "",
+    hideBottomNav: Boolean = true,
 ) {
     val scaffoldState = rememberScaffoldState()
-    val state = viewModel.itemNameState.value
-    val galleryLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()){
-            viewModel.onEvent(AddItemEvent.PickImage(it))
-        }
+    val itemName by viewModel.itemName
+    val itemIcon by viewModel.iconUrl
+//    val galleryLauncher = rememberLauncherForActivityResult(
+//        contract = ActivityResultContracts.GetContent()){
+//            viewModel.onEvent(AddItemEvent.PickIcon(it))
+//        }
     LaunchedEffect(key1 = true){
+        viewModel.onEvent(AddItemEvent.PickIcon(selectedIconUrl))
         viewModel.eventFlow.collectLatest { event ->
             when (event){
                 is UiEvent.ShowSnackbar -> {
@@ -78,7 +79,7 @@ fun AddItemScreen(
 
         Spacer(modifier = Modifier.height(SuperLargeSpace))
         TextField(
-            value = state.text ?: "",
+            value = itemName.text,
             onValueChange = {
                 if (it.length <= Constants.MAX_ITEM_NAME_LENGTH){
                     viewModel.onEvent(AddItemEvent.EnteredName(it))
@@ -108,7 +109,7 @@ fun AddItemScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if (viewModel.imageUriState.value == null){
+            if (itemIcon.isBlank()){
                 Icon(
                     imageVector = Icons.Filled.AddCircle,
                     contentDescription = stringResource(id = R.string.add_item),
@@ -118,7 +119,7 @@ fun AddItemScreen(
             } else {
                 Box {
                     Image(
-                        painter = rememberImagePainter(data = viewModel.imageUriState.value),
+                        painter = rememberImagePainter(data = itemIcon),
                         contentDescription = null,
                         modifier = Modifier
                             .fillMaxSize(),
@@ -131,7 +132,7 @@ fun AddItemScreen(
                         IconButton(
                             imageVector = Icons.Filled.Cancel ,
                             contentDescription = stringResource(id = R.string.delete_image),
-                            onClick = {viewModel.onEvent(AddItemEvent.PickImage(null))}
+                            onClick = {viewModel.onEvent(AddItemEvent.PickIcon(""))}
                         )
                     }
                 }
@@ -143,8 +144,10 @@ fun AddItemScreen(
                 .fillMaxWidth(),
             onClick = {
                 viewModel.onEvent(AddItemEvent.SaveItem)
+                navigator.popBackStack()
+                navigator.navigate(HomeScreenDestination())
             },
-            enabled = !state.text.trim().isNullOrEmpty()
+            enabled = itemName.text.trim().isNotEmpty()
         ) {
             Text(
                 text = stringResource(id = R.string.add),
@@ -153,18 +156,5 @@ fun AddItemScreen(
             )
         }
 
-    }
-}
-
-@ExperimentalCoilApi
-@Preview
-@Composable
-fun DefaultPreview() {
-    ShoppingListTheme {
-        val navController = rememberNavController()
-        val backStackEntry by navController.currentBackStackEntryAsState()
-        backStackEntry?.let {
-            AddItemScreen(navigator = DestinationsNavController(navController, it))
-        }
     }
 }

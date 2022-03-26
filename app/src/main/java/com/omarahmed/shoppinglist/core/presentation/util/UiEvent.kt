@@ -1,6 +1,5 @@
 package com.omarahmed.shoppinglist.core.presentation.util
 
-import com.omarahmed.shoppinglist.destinations.DirectionDestination
 import com.ramcosta.composedestinations.spec.Direction
 
 sealed class UiEvent{

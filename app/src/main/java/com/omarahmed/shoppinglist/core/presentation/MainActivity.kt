@@ -9,12 +9,12 @@ import androidx.compose.runtime.getValue
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import coil.annotation.ExperimentalCoilApi
-import com.omarahmed.shoppinglist.NavGraphs
 import com.omarahmed.shoppinglist.core.presentation.component.BottomBarSection
 import com.omarahmed.shoppinglist.core.presentation.component.FabSection
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.*
 import com.omarahmed.shoppinglist.core.util.BottomNavDestinations
-import com.omarahmed.shoppinglist.destinations.AddItemScreenDestination
+import com.omarahmed.shoppinglist.features.NavGraphs
+import com.omarahmed.shoppinglist.features.destinations.AddItemScreenDestination
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.navigation.navigateTo
 import dagger.hilt.android.AndroidEntryPoint

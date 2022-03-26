@@ -26,7 +26,7 @@ import com.omarahmed.shoppinglist.core.presentation.ui.theme.GreenAccent
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.LargeCornerRadius
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.SmallCornerRadius
 import com.omarahmed.shoppinglist.core.util.BottomNavDestinations
-import com.omarahmed.shoppinglist.navDestination
+import com.omarahmed.shoppinglist.features.navDestination
 import com.ramcosta.composedestinations.navigation.navigateTo
 
 @OptIn(ExperimentalFoundationApi::class, coil.annotation.ExperimentalCoilApi::class)

@@ -17,7 +17,7 @@ import com.omarahmed.shoppinglist.core.presentation.ui.theme.ImageSize
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.LargeSpace
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.MediumSpace
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.SmallSpace
-import com.omarahmed.shoppinglist.feature_cart.data.entity.CartEntity
+import com.omarahmed.shoppinglist.features.feature_cart.data.entity.CartEntity
 
 @ExperimentalCoilApi
 @Composable

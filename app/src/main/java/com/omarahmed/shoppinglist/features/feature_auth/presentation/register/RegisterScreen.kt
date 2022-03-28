@@ -104,7 +104,7 @@ fun RegisterScreen(
             )
             Spacer(modifier = Modifier.height(MediumSpace))
             StandardTextField(
-                value = emailState.text,
+                value = emailState.text.lowercase(),
                 hint = stringResource(id = R.string.email),
                 onValueChange = {
                     viewModel.onEmailChange(it)

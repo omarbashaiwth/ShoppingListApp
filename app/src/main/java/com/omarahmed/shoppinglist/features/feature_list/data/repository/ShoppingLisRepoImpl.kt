@@ -88,7 +88,12 @@ class ShoppingLisRepoImpl @Inject constructor(
     ): Resource<ShoppingItem> {
         val request = UpdateItemRequest(isAddedToCart)
         return try {
-            val response = api.updateItem(itemId = itemId, request = request)
+            val token = dataStoreManager.getToken.first()
+            val response = api.updateItem(
+                token = "Bearer $token",
+                itemId = itemId,
+                request = request
+            )
             if (response.success){
                 Resource.Success(response.message,response.data)
             } else {

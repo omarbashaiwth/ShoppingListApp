@@ -30,6 +30,7 @@ interface ShoppingListApi {
 
     @PUT("/api/item/update")
     suspend fun updateItem(
+        @Header("Authorization") token: String,
         @Query("itemId") itemId: String,
         @Body request: UpdateItemRequest
     ): BasicApiResponse<ShoppingItem>

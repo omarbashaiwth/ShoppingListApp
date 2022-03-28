@@ -100,33 +100,24 @@ fun HomeScreen(
             ) {
                 items(allItems.itemCount) { index ->
                     allItems[index]?.let {item ->
-                        ShoppingItem(shoppingItem = item) {
-                            homeViewModel.updateItem(item)
-                            if (item.isAddedToCart){
-                                cartViewModel.insertItem(
-                                    CartEntity(
-                                        itemName = item.name,
-                                        itemIconUrl = item.imageUrl ?: "",
-                                        itemId = item.id
+                        ShoppingItem(
+                            shoppingItem = item,
+                            onAddItemClick = {
+                                homeViewModel.updateItem(item)
+                                if (!item.isAddedToCart){
+                                    cartViewModel.insertItem(
+                                        CartEntity(
+                                            itemName = item.name,
+                                            itemIconUrl = item.imageUrl ?: "",
+                                            itemId = item.id
+                                        )
                                     )
-                                )
 
-                            } else {
-                                cartViewModel.deleteItem(item.id)
+                                } else {
+                                    cartViewModel.deleteItem(item.id)
+                                }
                             }
-                        }
-                        if (item.isAddedToCart){
-                            cartViewModel.insertItem(
-                                CartEntity(
-                                    itemName = item.name,
-                                    itemIconUrl = item.imageUrl ?: "",
-                                    itemId = item.id
-                                )
-                            )
-
-                        } else {
-                            cartViewModel.deleteItem(item.id)
-                        }
+                        )
                     }
                 }
 

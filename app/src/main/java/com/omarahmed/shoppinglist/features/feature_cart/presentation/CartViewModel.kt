@@ -1,12 +1,17 @@
 package com.omarahmed.shoppinglist.features.feature_cart.presentation
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.omarahmed.shoppinglist.features.feature_cart.data.entity.CartEntity
 import com.omarahmed.shoppinglist.features.feature_cart.domain.reposirtory.CartRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -15,16 +20,23 @@ class CartViewModel @Inject constructor(
     private val repo: CartRepo
 ) : ViewModel() {
 
-    private val _allItems = MutableLiveData<List<CartEntity>>(emptyList())
+    private val _allItems = mutableStateOf<List<CartEntity>>(emptyList())
     val allItems = _allItems
 
+    private var getNotesJob: Job? = null
+
     init {
-        viewModelScope.launch {
-            repo.getAllItems.collect {
-                _allItems.postValue(it)
-            }
-        }
+        getAllItems()
     }
+
+    private fun getAllItems() {
+        getNotesJob?.cancel()
+        getNotesJob = repo.getAllItems.onEach {
+            _allItems.value = it
+        }
+            .launchIn(viewModelScope)
+    }
+
 
     fun insertItem(item: CartEntity) = viewModelScope.launch {
         repo.insertItem(item)

@@ -43,17 +43,17 @@ fun CartScreen(
     cartViewModel: CartViewModel = hiltViewModel(),
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
-    val allItems by cartViewModel.allItems.observeAsState(listOf())
+    val allItems by cartViewModel.allItems
 
-    TopBarSection(title = stringResource(id = R.string.cart))
-
-    Box(
+    Column(
         modifier = Modifier.fillMaxSize()
     ) {
+        TopBarSection(title = stringResource(id = R.string.cart))
         if (allItems.isEmpty()){
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.align(Alignment.Center)
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxSize()
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.empty_cart),

@@ -59,11 +59,9 @@ fun SearchScreen(
                 searchQuery = searchQuery.text ?: "",
                 onSearchQueryChange = {
                     searchViewModel.onEvent(SearchEvent.EnteredQuery(it))
-                },
-                onSearch = {
                     searchViewModel.onEvent(SearchEvent.Search(it))
                 },
-                onBackClick = { navigator.popBackStack() },
+                onBackClick = { navigator.popBackStack()}
             )
             Spacer(modifier = Modifier.height(SmallSpace))
             LazyVerticalGrid(

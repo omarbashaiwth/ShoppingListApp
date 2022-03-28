@@ -57,8 +57,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideSearchRepo(api: ShoppingListApi): SearchRepo {
-        return SearchRepoImpl(api)
+    fun provideSearchRepo(api: ShoppingListApi, dataStoreManager: DataStoreManager): SearchRepo {
+        return SearchRepoImpl(api,dataStoreManager)
     }
 
     @Provides

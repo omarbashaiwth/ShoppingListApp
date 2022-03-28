@@ -17,6 +17,7 @@ interface ShoppingListApi {
 
     @GET("/api/items/search")
     suspend fun searchForItem(
+        @Header("Authorization") token: String,
         @Query("query") searchQuery: String
     ): List<ShoppingItem>
 

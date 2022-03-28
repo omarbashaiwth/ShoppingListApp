@@ -33,7 +33,7 @@ fun SearchTextField(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
     onSearchQueryChange: (String) -> Unit,
-    onSearch: (String) -> Unit,
+    onSearch: (String) -> Unit = {},
 ) {
     val focusRequester = remember {
         FocusRequester()

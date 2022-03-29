@@ -24,8 +24,6 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.flow.collectLatest
 
 
-@ExperimentalCoilApi
-@ExperimentalFoundationApi
 @Destination
 @Composable
 fun SearchScreen(
@@ -47,6 +45,7 @@ fun SearchScreen(
                         message = event.message
                     )
                 }
+                is UiEvent.Navigate -> Unit
             }
         }
     }
@@ -56,7 +55,7 @@ fun SearchScreen(
         }
         Column {
             SearchTextField(
-                searchQuery = searchQuery.text ?: "",
+                searchQuery = searchQuery.text,
                 onSearchQueryChange = {
                     searchViewModel.onEvent(SearchEvent.EnteredQuery(it))
                     searchViewModel.onEvent(SearchEvent.Search(it))

@@ -38,7 +38,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.flow.collectLatest
 
-@Destination(start = true)
+@Destination()
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),

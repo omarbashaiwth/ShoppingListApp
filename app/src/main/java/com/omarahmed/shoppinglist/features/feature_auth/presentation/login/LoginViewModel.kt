@@ -21,12 +21,9 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@OptIn(ExperimentalFoundationApi::class, coil.annotation.ExperimentalCoilApi::class)
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val loginResult: LoginUseCase,
-    private val authRepository: AuthRepository,
-    dataStoreManager: DataStoreManager
 ): ViewModel() {
 
     private val emailState = mutableStateOf(TextFieldState())
@@ -51,20 +48,6 @@ class LoginViewModel @Inject constructor(
 
     fun onPasswordToggleVisibility(isPasswordVisible: Boolean){
         passwordState.value = passwordState.value.copy(isPasswordVisible = !isPasswordVisible )
-    }
-
-    init {
-        viewModelScope.launch {
-            val token = dataStoreManager.getToken.first()
-            when(authRepository.authenticate("Bearer $token")){
-                is Resource.Success -> {
-                    eventChannel.send(UiEvent.Navigate(HomeScreenDestination))
-                }
-                is Resource.Error -> {
-                    Log.d("LoginViewModel","You are not logged in")
-                }
-            }
-        }
     }
 
     fun onLoginUser() = viewModelScope.launch {

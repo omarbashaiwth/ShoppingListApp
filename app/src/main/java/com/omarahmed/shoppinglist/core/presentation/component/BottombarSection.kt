@@ -29,7 +29,6 @@ import com.omarahmed.shoppinglist.core.util.BottomNavDestinations
 import com.omarahmed.shoppinglist.features.navDestination
 import com.ramcosta.composedestinations.navigation.navigateTo
 
-@OptIn(ExperimentalFoundationApi::class, coil.annotation.ExperimentalCoilApi::class)
 @Composable
 fun BottomBarSection(
     navController: NavController,

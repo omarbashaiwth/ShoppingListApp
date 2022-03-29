@@ -34,7 +34,6 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.flow.collectLatest
 import okhttp3.internal.filterList
 
-@OptIn(ExperimentalFoundationApi::class, coil.annotation.ExperimentalCoilApi::class)
 @Destination
 @Composable
 fun IconSearchScreen(

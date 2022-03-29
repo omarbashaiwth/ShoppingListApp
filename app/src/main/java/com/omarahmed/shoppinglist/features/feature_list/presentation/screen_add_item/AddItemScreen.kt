@@ -37,8 +37,6 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavController
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.flow.collectLatest
 
-@OptIn(ExperimentalFoundationApi::class)
-@ExperimentalCoilApi
 @Destination
 @Composable
 fun AddItemScreen(

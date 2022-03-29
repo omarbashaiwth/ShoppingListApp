@@ -62,6 +62,15 @@ android {
     }
 }
 
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    kotlinOptions{
+        freeCompilerArgs += ["-Xuse-experimental=androidx.compose.foundation.ExperimentalFoundationApi"]
+        freeCompilerArgs += ["-Xuse-experimental=coil.annotation.ExperimentalCoilApi"]
+        freeCompilerArgs += ["-Xuse-experimental=kotlin.OptIn"]
+    }
+
+}
+
 dependencies {
 
     implementation 'androidx.core:core-ktx:1.7.0'

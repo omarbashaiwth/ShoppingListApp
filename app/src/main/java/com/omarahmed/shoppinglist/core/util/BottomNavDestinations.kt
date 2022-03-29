@@ -12,14 +12,12 @@ sealed class BottomNavDestinations(
     val title: String,
     val icon: Int
 ) {
-    @OptIn(ExperimentalFoundationApi::class, ExperimentalCoilApi::class)
     object HomeScreen : BottomNavDestinations(
         destination = HomeScreenDestination,
         title = "Shopping List",
         icon = R.drawable.ic_home
     )
 
-    @OptIn(ExperimentalCoilApi::class)
     object CartScreen : BottomNavDestinations(
         destination = CartScreenDestination,
         title = "Cart",

@@ -22,7 +22,7 @@ class IconRepositoryImpl @Inject constructor(
         } catch (e: IOException){
             Resource.Error(context.getString(R.string.error_couldnt_reach_server))
         } catch (e:HttpException){
-            Resource.Error(e.localizedMessage + " cause by: ${e.cause}")
+            Resource.Error(context.getString(R.string.something_went_wrong))
         }
     }
 }

@@ -7,6 +7,7 @@ import com.omarahmed.shoppinglist.core.data.model.ShoppingItem
 import com.omarahmed.shoppinglist.core.presentation.util.UiEvent
 import com.omarahmed.shoppinglist.features.destinations.LoginScreenDestination
 import com.omarahmed.shoppinglist.features.feature_auth.domain.repository.AuthRepository
+import com.omarahmed.shoppinglist.features.feature_cart.domain.reposirtory.CartRepo
 import com.omarahmed.shoppinglist.features.feature_list.domain.repository.ShoppingListRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -17,7 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val shoppingListRepo: ShoppingListRepo,
-    private val authRepo: AuthRepository
+    private val authRepo: AuthRepository,
 ) : ViewModel() {
 
     val items = shoppingListRepo.allItems.cachedIn(viewModelScope)
@@ -25,13 +26,11 @@ class HomeViewModel @Inject constructor(
     private val eventChannel = Channel<UiEvent>()
     val events = eventChannel.receiveAsFlow()
 
-    fun updateItem(shoppingItem: ShoppingItem) {
-        val isAddedToCart = shoppingItem.isAddedToCart
-        val updatedItem = shoppingItem.copy(isAddedToCart = !isAddedToCart)
+    fun updateItem(itemId: String,isAddedToCart: Boolean) {
         viewModelScope.launch {
              shoppingListRepo.updateItem(
-                itemId = shoppingItem.id,
-                isAddedToCart = updatedItem.isAddedToCart
+                itemId = itemId,
+                isAddedToCart = isAddedToCart
             )
 
         }
@@ -41,4 +40,5 @@ class HomeViewModel @Inject constructor(
         authRepo.logout()
         eventChannel.send(UiEvent.Navigate(LoginScreenDestination()))
     }
+
 }

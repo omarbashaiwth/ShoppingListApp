@@ -5,18 +5,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,7 +30,6 @@ import com.omarahmed.shoppinglist.features.feature_cart.data.entity.CartEntity
 import com.omarahmed.shoppinglist.features.feature_list.presentation.screen_home.HomeViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 
-@ExperimentalCoilApi
 @Destination
 @Composable
 fun CartScreen(
@@ -44,12 +37,35 @@ fun CartScreen(
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
     val allItems by cartViewModel.allItems
+    val showDialog by cartViewModel.showDialog
+    var menuExpanded by remember {
+        mutableStateOf(false)
+    }
 
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-        TopBarSection(title = stringResource(id = R.string.cart))
-        if (allItems.isEmpty()){
+        TopBarSection(
+            title = stringResource(id = R.string.cart),
+            showMenuActionIcon = true,
+            onMenuIconClick = { menuExpanded = true },
+            dropDownMenu = {
+                DropdownMenu(
+                    expanded = menuExpanded,
+                    onDismissRequest = { menuExpanded = false }
+                ) {
+                    DropdownMenuItem(
+                        onClick = {
+                            menuExpanded = false
+                            cartViewModel.onDeleteAllClicked()
+                        }
+                    ) {
+                        Text(text = stringResource(R.string.delete_all_items))
+                    }
+                }
+            }
+        )
+        if (allItems.isEmpty()) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
@@ -81,18 +97,37 @@ fun CartScreen(
             }
         }
     }
+
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { cartViewModel.onDeleteAllDismissed() },
+            title = { Text("Delete all items") },
+            text = { Text("Are you sure you want to delete all items from cart?") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        cartViewModel.onDeleteAllConfirmed()
+                    }
+                ) {
+                    Text(text = "Confirm")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { cartViewModel.onDeleteAllDismissed() }) {
+                    Text(text = "Dismiss")
+                }
+            }
+        )
+    }
 }
 
-@ExperimentalCoilApi
 @Composable
 fun CartItem(
     cartItem: CartEntity,
     cartViewModel: CartViewModel,
     homeViewModel: HomeViewModel
 ) {
-    val isDeleted = remember {
-        mutableStateOf(false)
-    }
+
     val shoppingItem = ShoppingItem(
         name = cartItem.itemName,
         imageUrl = cartItem.itemIconUrl,
@@ -124,7 +159,9 @@ fun CartItem(
         ) {
             IconButton(
                 modifier = Modifier.size(ButtonHeight),
-                tintColor = if (cartItem.isBought) Color.Yellow else LocalContentColor.current.copy(alpha = LocalContentAlpha.current),
+                tintColor = if (cartItem.isBought) Color.Yellow else LocalContentColor.current.copy(
+                    alpha = LocalContentAlpha.current
+                ),
                 imageVector = Icons.Default.CheckCircle,
                 contentDescription = stringResource(id = R.string.already_bought),
                 onClick = {
@@ -136,15 +173,10 @@ fun CartItem(
                 imageVector = Icons.Default.Delete,
                 contentDescription = stringResource(id = R.string.remove),
                 onClick = {
-                    isDeleted.value = true
                     cartViewModel.deleteItem(cartItem.itemId)
                     homeViewModel.updateItem(
-                        ShoppingItem(
-                          name = cartItem.itemName,
-                          imageUrl = cartItem.itemIconUrl,
-                          isAddedToCart = isDeleted.value,
-                          id = cartItem.itemId
-                        )
+                        cartItem.itemId,
+                        false,
                     )
                 }
             )

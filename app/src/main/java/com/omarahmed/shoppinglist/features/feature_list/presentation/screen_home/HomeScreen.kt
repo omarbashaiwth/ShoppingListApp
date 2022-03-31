@@ -1,5 +1,6 @@
 package com.omarahmed.shoppinglist.features.feature_list.presentation.screen_home
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
@@ -31,8 +32,6 @@ import retrofit2.HttpException
 import java.io.IOException
 
 
-@ExperimentalCoilApi
-@ExperimentalFoundationApi
 @Destination()
 @Composable
 fun HomeScreen(
@@ -64,7 +63,8 @@ fun HomeScreen(
     ) {
         TopBarSection(
             title = stringResource(id = R.string.home),
-            showActionIcons = true,
+            showSearchActionIcon = true,
+            showMenuActionIcon = true,
             onSearchIconClick = {navigator.navigate(SearchScreenDestination())},
             onMenuIconClick = { menuExpanded = true},
             dropDownMenu = {
@@ -75,6 +75,7 @@ fun HomeScreen(
                     DropdownMenuItem(
                         onClick = {
                             menuExpanded = false
+                            cartViewModel.deleteAllItems()
                             homeViewModel.logout()
                         }
                     ) {
@@ -103,7 +104,6 @@ fun HomeScreen(
                         ShoppingItem(
                             shoppingItem = item,
                             onAddItemClick = {
-                                homeViewModel.updateItem(item)
                                 if (!item.isAddedToCart){
                                     cartViewModel.insertItem(
                                         CartEntity(
@@ -112,12 +112,28 @@ fun HomeScreen(
                                             itemId = item.id
                                         )
                                     )
+                                    homeViewModel.updateItem(item.id,true)
 
                                 } else {
                                     cartViewModel.deleteItem(item.id)
+                                    homeViewModel.updateItem(item.id,false)
                                 }
                             }
                         )
+//                        if (item.isAddedToCart){
+//                            Log.d("HomeScreen", "isAddedToCart")
+//                            cartViewModel.insertItem(
+//                                CartEntity(
+//                                    itemName = item.name,
+//                                    itemIconUrl = item.imageUrl ?: "",
+//                                    itemId = item.id
+//                                )
+//                            )
+//
+//                        } else {
+//                            Log.d("HomeScreen", "isNotAddedToCart")
+//                            cartViewModel.deleteItem(item.id)
+//                        }
                     }
                 }
 

@@ -24,4 +24,8 @@ class CartRepoImpl @Inject constructor(
     override suspend fun updateItem(item: CartEntity) {
         dao.updateItem(item)
     }
+
+    override suspend fun deleteAllItems() {
+        dao.deleteAllItems()
+    }
 }

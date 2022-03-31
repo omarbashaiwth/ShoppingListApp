@@ -32,7 +32,6 @@ import javax.inject.Inject
 
 class ShoppingLisRepoImpl @Inject constructor(
     private val api: ShoppingListApi,
-    private val gson: Gson,
     private val appContext: Context,
     private val dataStoreManager: DataStoreManager
 ) : ShoppingListRepo {

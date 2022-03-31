@@ -23,6 +23,9 @@ class CartViewModel @Inject constructor(
     private val _allItems = mutableStateOf<List<CartEntity>>(emptyList())
     val allItems = _allItems
 
+    private val showDialogState = mutableStateOf(false)
+    val showDialog = showDialogState
+
     private var getNotesJob: Job? = null
 
     init {
@@ -46,11 +49,28 @@ class CartViewModel @Inject constructor(
         repo.deleteItem(itemId)
     }
 
+    fun deleteAllItems() = viewModelScope.launch {
+        repo.deleteAllItems()
+    }
+
     fun onBoughtStateChange(cartEntity: CartEntity) {
         val currentBoughtState = cartEntity.isBought
         val updatedItemCart = cartEntity.copy(isBought = !currentBoughtState)
         viewModelScope.launch {
             repo.updateItem(updatedItemCart)
         }
+    }
+
+    fun onDeleteAllClicked(){
+        showDialogState.value = true
+    }
+
+    fun onDeleteAllConfirmed() {
+        showDialogState.value = false
+        deleteAllItems()
+    }
+
+    fun onDeleteAllDismissed(){
+        showDialogState.value = false
     }
 }

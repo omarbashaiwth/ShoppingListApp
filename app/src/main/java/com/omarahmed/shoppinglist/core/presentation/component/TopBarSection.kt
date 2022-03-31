@@ -25,7 +25,8 @@ fun TopBarSection(
     title: String,
     navigationIcon: ImageVector? = null,
     onArrowBackClick: () -> Unit = {},
-    showActionIcons: Boolean = false,
+    showMenuActionIcon: Boolean = false,
+    showSearchActionIcon:Boolean = false,
     onSearchIconClick: () -> Unit = {},
     onMenuIconClick: () -> Unit = {},
     dropDownMenu: @Composable () -> Unit = {}
@@ -46,20 +47,20 @@ fun TopBarSection(
             )
         },
         actions = {
-            if (showActionIcons) {
+            if (showSearchActionIcon) {
                 IconButton(
                     imageVector = Icons.Default.Search,
                     contentDescription = stringResource(id = R.string.search),
                     onClick = onSearchIconClick
                 )
+            }
+            if (showMenuActionIcon)
                 IconButton(
                     imageVector = Icons.Default.MoreVert,
                     contentDescription = stringResource(R.string.more_oprions),
                     onClick = onMenuIconClick
                 )
-                dropDownMenu()
-
-            }
+            dropDownMenu()
         },
         navigationIcon = navigationIcon?.let {
             {

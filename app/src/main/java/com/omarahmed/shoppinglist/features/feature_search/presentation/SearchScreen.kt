@@ -83,11 +83,12 @@ fun SearchScreen(
                                     itemId = searchResult.id
                                 )
                             )
+                            homeViewModel.updateItem(searchResult.id, true)
                         } else {
                             cartViewModel.deleteItem(searchResult.id)
-                        }
+                            homeViewModel.updateItem(searchResult.id, false)
 
-                        homeViewModel.updateItem(searchResult)
+                        }
                     }
                 }
             }

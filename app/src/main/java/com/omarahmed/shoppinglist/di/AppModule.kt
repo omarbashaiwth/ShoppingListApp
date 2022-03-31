@@ -42,11 +42,10 @@ object AppModule {
     @Singleton
     fun provideRepository(
         api: ShoppingListApi,
-        gson: Gson,
         @ApplicationContext appContext: Context,
         dataStoreManager: DataStoreManager
     ): ShoppingListRepo {
-        return ShoppingLisRepoImpl(api, gson, appContext, dataStoreManager)
+        return ShoppingLisRepoImpl(api, appContext, dataStoreManager)
     }
 
     @Provides

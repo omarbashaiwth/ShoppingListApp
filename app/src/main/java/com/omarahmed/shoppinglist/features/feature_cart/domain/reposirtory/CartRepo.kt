@@ -13,4 +13,6 @@ interface CartRepo {
 
     suspend fun updateItem(item: CartEntity)
 
+    suspend fun deleteAllItems()
+
 }

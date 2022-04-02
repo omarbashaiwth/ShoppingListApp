@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.omarahmed.shoppinglist.features.feature_cart.data.entity.CartEntity
 import com.omarahmed.shoppinglist.features.feature_cart.domain.reposirtory.CartRepo
+import com.omarahmed.shoppinglist.features.feature_list.domain.repository.ShoppingListRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
@@ -17,7 +18,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CartViewModel @Inject constructor(
-    private val repo: CartRepo
+    private val repo: CartRepo,
+    private val shoppingListRepo: ShoppingListRepo
 ) : ViewModel() {
 
     private val _allItems = mutableStateOf<List<CartEntity>>(emptyList())
@@ -49,8 +51,9 @@ class CartViewModel @Inject constructor(
         repo.deleteItem(itemId)
     }
 
-    fun deleteAllItems() = viewModelScope.launch {
+    fun deleteAllItems(ids: List<String>) = viewModelScope.launch {
         repo.deleteAllItems()
+        shoppingListRepo.updateAllItems(ids)
     }
 
     fun onBoughtStateChange(cartEntity: CartEntity) {
@@ -65,9 +68,9 @@ class CartViewModel @Inject constructor(
         showDialogState.value = true
     }
 
-    fun onDeleteAllConfirmed() {
+    fun onDeleteAllConfirmed(ids: List<String>) = viewModelScope.launch{
         showDialogState.value = false
-        deleteAllItems()
+        deleteAllItems(ids)
     }
 
     fun onDeleteAllDismissed(){

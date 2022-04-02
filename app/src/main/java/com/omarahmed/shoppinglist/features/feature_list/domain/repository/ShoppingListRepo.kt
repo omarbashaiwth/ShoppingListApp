@@ -13,4 +13,6 @@ interface ShoppingListRepo {
     suspend fun addNewItem(itemName: String, itemIconUrl: String): Resource<Unit>
 
     suspend fun updateItem(itemId: String, isAddedToCart: Boolean): Resource<ShoppingItem>
+
+    suspend fun updateAllItems(ids: List<String>): Resource<ShoppingItem>
 }

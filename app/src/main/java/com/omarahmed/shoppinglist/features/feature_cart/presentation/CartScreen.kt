@@ -106,7 +106,11 @@ fun CartScreen(
             confirmButton = {
                 TextButton(
                     onClick = {
-                        cartViewModel.onDeleteAllConfirmed()
+                        cartViewModel.onDeleteAllConfirmed(
+                            ids = allItems.map {
+                                it.itemId
+                            }
+                        )
                     }
                 ) {
                     Text(text = "Confirm")

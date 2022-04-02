@@ -16,6 +16,7 @@ import com.omarahmed.shoppinglist.core.util.Resource
 import com.omarahmed.shoppinglist.features.feature_list.data.remote.request.AddItemRequest
 import com.omarahmed.shoppinglist.features.feature_list.data.remote.request.UpdateItemRequest
 import com.omarahmed.shoppinglist.features.feature_list.data.paging.ItemsSource
+import com.omarahmed.shoppinglist.features.feature_list.data.remote.request.UpdateAllItemsRequest
 import com.omarahmed.shoppinglist.features.feature_list.domain.repository.ShoppingListRepo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -99,6 +100,26 @@ class ShoppingLisRepoImpl @Inject constructor(
                 Resource.Error(response.message)
             }
 
+        } catch (e:IOException){
+            Resource.Error(appContext.getString(R.string.error_couldnt_reach_server))
+        } catch (e: HttpException){
+            Resource.Error(appContext.getString(R.string.something_went_wrong))
+        }
+    }
+
+    override suspend fun updateAllItems(ids: List<String>): Resource<ShoppingItem> {
+        val request = UpdateAllItemsRequest(ids)
+        return try {
+            val token = dataStoreManager.getToken.first()
+            val response = api.updateAllItems(
+                token = "Bearer $token",
+                request = request
+            )
+            if (response.success){
+                Resource.Success(response.message,response.data)
+            } else {
+                Resource.Error(response.message)
+            }
         } catch (e:IOException){
             Resource.Error(appContext.getString(R.string.error_couldnt_reach_server))
         } catch (e: HttpException){

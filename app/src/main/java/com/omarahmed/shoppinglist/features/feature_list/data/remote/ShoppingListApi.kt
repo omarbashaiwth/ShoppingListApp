@@ -4,6 +4,7 @@ import com.omarahmed.shoppinglist.core.data.model.ShoppingItem
 import com.omarahmed.shoppinglist.features.feature_list.data.remote.request.UpdateItemRequest
 import com.omarahmed.shoppinglist.core.data.remote.response.BasicApiResponse
 import com.omarahmed.shoppinglist.features.feature_list.data.remote.request.AddItemRequest
+import com.omarahmed.shoppinglist.features.feature_list.data.remote.request.UpdateAllItemsRequest
 import okhttp3.MultipartBody
 import retrofit2.http.*
 
@@ -34,5 +35,11 @@ interface ShoppingListApi {
         @Header("Authorization") token: String,
         @Query("itemId") itemId: String,
         @Body request: UpdateItemRequest
+    ): BasicApiResponse<ShoppingItem>
+
+    @PUT("/api/item/updateAll")
+    suspend fun updateAllItems(
+        @Header("Authorization") token: String,
+        @Body request: UpdateAllItemsRequest
     ): BasicApiResponse<ShoppingItem>
 }

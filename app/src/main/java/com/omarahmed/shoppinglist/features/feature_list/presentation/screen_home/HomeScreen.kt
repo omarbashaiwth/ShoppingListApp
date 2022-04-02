@@ -75,7 +75,11 @@ fun HomeScreen(
                     DropdownMenuItem(
                         onClick = {
                             menuExpanded = false
-                            cartViewModel.deleteAllItems()
+                            cartViewModel.deleteAllItems(
+                                ids =  allItems.itemSnapshotList.map {
+                                    it?.id ?: ""
+                                }
+                            )
                             homeViewModel.logout()
                         }
                     ) {

@@ -10,7 +10,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -19,7 +18,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.annotation.ExperimentalCoilApi
 import com.omarahmed.shoppinglist.core.data.model.ShoppingItem
 import com.omarahmed.shoppinglist.R
 import com.omarahmed.shoppinglist.core.presentation.component.IconButton
@@ -36,7 +34,7 @@ fun CartScreen(
     cartViewModel: CartViewModel = hiltViewModel(),
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
-    val allItems by cartViewModel.allItems
+    val allCartItems by cartViewModel.allItems
     val showDialog by cartViewModel.showDialog
     var menuExpanded by remember {
         mutableStateOf(false)
@@ -65,7 +63,7 @@ fun CartScreen(
                 }
             }
         )
-        if (allItems.isEmpty()) {
+        if (allCartItems.isEmpty()) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
@@ -88,9 +86,9 @@ fun CartScreen(
                 top = SmallSpace
             )
         ) {
-            items(allItems.size) {
+            items(allCartItems.size) {
                 CartItem(
-                    cartItem = allItems[it],
+                    cartItem = allCartItems[it],
                     cartViewModel = cartViewModel,
                     homeViewModel = homeViewModel
                 )
@@ -107,7 +105,7 @@ fun CartScreen(
                 TextButton(
                     onClick = {
                         cartViewModel.onDeleteAllConfirmed(
-                            ids = allItems.map {
+                            ids = allCartItems.map {
                                 it.itemId
                             }
                         )

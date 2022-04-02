@@ -2,6 +2,7 @@ package com.omarahmed.shoppinglist.features.feature_list.presentation.screen_hom
 
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
@@ -9,7 +10,9 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -88,6 +91,21 @@ fun HomeScreen(
                 }
             }
         )
+        if (allItems.itemSnapshotList.isEmpty()){
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.empty_cart),
+                    contentDescription = null,
+                    modifier = Modifier.size(100.dp)
+                )
+                Spacer(modifier = Modifier.height(SmallSpace))
+                Text(text = stringResource(R.string.no_items_yet_found))
+            }
+        }
         SwipeRefresh(
             state = rememberSwipeRefreshState(isRefreshing = allItems.loadState.refresh is LoadState.Loading),
             onRefresh = {allItems.refresh()},

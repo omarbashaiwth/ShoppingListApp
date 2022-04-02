@@ -33,4 +33,6 @@
     <string name="logout">Logout</string>
     <string name="logo">Logo</string>
     <string name="delete_all_items">"Delete all "</string>
+    <string name="no_items_yet_found">You don\'t have items , click + to add a new item</string>
+    <string name="no_result">No Result, try using another query</string>
 </resources>

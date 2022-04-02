@@ -1,19 +1,28 @@
 package com.omarahmed.shoppinglist.features.feature_search.presentation
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.SearchOff
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.annotation.ExperimentalCoilApi
+import com.omarahmed.shoppinglist.R
 import com.omarahmed.shoppinglist.features.feature_list.presentation.screen_home.components.ShoppingItem
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.SmallSpace
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.SuperLargeSpace
+import com.omarahmed.shoppinglist.core.presentation.ui.theme.White
 import com.omarahmed.shoppinglist.core.presentation.util.UiEvent
 import com.omarahmed.shoppinglist.features.feature_cart.data.entity.CartEntity
 import com.omarahmed.shoppinglist.features.feature_cart.presentation.CartViewModel
@@ -33,7 +42,7 @@ fun SearchScreen(
     navigator: DestinationsNavigator,
     hideBottomNav: Boolean = true
 ) {
-    val state = searchViewModel.state.value
+    val state by searchViewModel.state
     val searchQuery = searchViewModel.searchQuery.value
     val scaffoldState = rememberScaffoldState()
 
@@ -62,6 +71,22 @@ fun SearchScreen(
                 },
                 onBackClick = { navigator.popBackStack()}
             )
+            if (state.searchResult.isEmpty() && searchQuery.text.isNotEmpty()){
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.SearchOff,
+                        contentDescription = null,
+                        modifier = Modifier.size(100.dp),
+                        tint = White
+                    )
+                    Spacer(modifier = Modifier.height(SmallSpace))
+                    Text(text = stringResource(R.string.no_result))
+                }
+            }
             Spacer(modifier = Modifier.height(SmallSpace))
             LazyVerticalGrid(
                 cells = GridCells.Fixed(2),

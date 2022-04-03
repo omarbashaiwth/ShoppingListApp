@@ -25,6 +25,8 @@ import com.omarahmed.shoppinglist.core.presentation.component.ImageWithText
 import com.omarahmed.shoppinglist.core.presentation.component.TopBarSection
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.*
 import com.omarahmed.shoppinglist.features.feature_cart.data.entity.CartEntity
+import com.omarahmed.shoppinglist.features.feature_cart.presentation.components.CartItem
+import com.omarahmed.shoppinglist.features.feature_cart.presentation.components.StandardAlertDialog
 import com.omarahmed.shoppinglist.features.feature_list.presentation.screen_home.HomeViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 
@@ -97,92 +99,10 @@ fun CartScreen(
     }
 
     if (showDialog) {
-        AlertDialog(
-            onDismissRequest = { cartViewModel.onDeleteAllDismissed() },
-            title = { Text("Delete all items") },
-            text = { Text("Are you sure you want to delete all items from cart?") },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        cartViewModel.onDeleteAllConfirmed(
-                            ids = allCartItems.map {
-                                it.itemId
-                            }
-                        )
-                    }
-                ) {
-                    Text(text = "Confirm")
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { cartViewModel.onDeleteAllDismissed() }) {
-                    Text(text = "Dismiss")
-                }
-            }
-        )
-    }
-}
-
-@Composable
-fun CartItem(
-    cartItem: CartEntity,
-    cartViewModel: CartViewModel,
-    homeViewModel: HomeViewModel
-) {
-
-    val shoppingItem = ShoppingItem(
-        name = cartItem.itemName,
-        imageUrl = cartItem.itemIconUrl,
-        id = cartItem.itemId
-    )
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier
-            .padding(SmallSpace)
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(LargeCornerRadius))
-            .background(MaterialTheme.colors.surface)
-    ) {
-        ImageWithText(shoppingItem)
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceAround,
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(
-                    RoundedCornerShape(
-                        bottomStart = LargeCornerRadius,
-                        bottomEnd = LargeCornerRadius
-                    )
-                )
-                .background(MaterialTheme.colors.primary)
-                .align(Alignment.BottomCenter)
-                .padding(horizontal = SuperLargeSpace)
-        ) {
-            IconButton(
-                modifier = Modifier.size(ButtonHeight),
-                tintColor = if (cartItem.isBought) Color.Yellow else LocalContentColor.current.copy(
-                    alpha = LocalContentAlpha.current
-                ),
-                imageVector = Icons.Default.CheckCircle,
-                contentDescription = stringResource(id = R.string.already_bought),
-                onClick = {
-                    cartViewModel.onBoughtStateChange(cartItem)
-                }
-            )
-            IconButton(
-                modifier = Modifier.size(ButtonHeight),
-                imageVector = Icons.Default.Delete,
-                contentDescription = stringResource(id = R.string.remove),
-                onClick = {
-                    cartViewModel.deleteItem(cartItem.itemId)
-                    homeViewModel.updateItem(
-                        cartItem.itemId,
-                        false,
-                    )
-                }
-            )
-        }
+       StandardAlertDialog(
+           cartViewModel = cartViewModel,
+           allCartItems = allCartItems
+       )
     }
 }
 

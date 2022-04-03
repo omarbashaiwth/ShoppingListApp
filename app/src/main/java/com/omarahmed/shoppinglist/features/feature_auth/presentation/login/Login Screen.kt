@@ -1,8 +1,6 @@
 package com.omarahmed.shoppinglist.features.feature_auth.presentation.login
 
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.*
@@ -71,10 +69,14 @@ fun LoginScreen(
 
     Scaffold(scaffoldState = scaffoldState) {
         if (loading){
-            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+            LinearProgressIndicator(
+                modifier = Modifier.fillMaxWidth(),
+                color = White
+            )
         }
         Column(
             modifier = Modifier
+                .verticalScroll(rememberScrollState())
                 .fillMaxSize()
                 .padding(LargeSpace),
             verticalArrangement = Arrangement.Center,

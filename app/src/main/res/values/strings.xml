@@ -35,4 +35,10 @@
     <string name="delete_all_items">"Delete all "</string>
     <string name="no_items_yet_found">You don\'t have items , click + to add a new item</string>
     <string name="no_result">No Result, try using another query</string>
+    <string name="delete_all_title">Delete All Items</string>
+    <string name="empty_cart_title">Empty Cart</string>
+    <string name="delete_all_text">Are you sure you want to delete all items from cart?</string>
+    <string name="empty_cart_text">Your cart is already empty</string>
+    <string name="confirm">Confirm</string>
+    <string name="dismiss">Dismiss</string>
 </resources>

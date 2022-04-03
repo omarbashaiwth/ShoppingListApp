@@ -1,8 +1,8 @@
 package com.omarahmed.shoppinglist.features.feature_auth.presentation.register
 
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.*
@@ -63,10 +63,14 @@ fun RegisterScreen(
     }
     Scaffold(scaffoldState = scaffoldState) {
         if (loading){
-            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+            LinearProgressIndicator(
+                modifier = Modifier.fillMaxWidth(),
+                color = White
+            )
         }
         Column(
             modifier = Modifier
+                .verticalScroll(rememberScrollState())
                 .fillMaxSize()
                 .padding(LargeSpace),
             verticalArrangement = Arrangement.Center,
@@ -81,7 +85,9 @@ fun RegisterScreen(
             Image(
                 painter = painterResource(id = R.drawable.shopping_cart),
                 contentDescription = null,
-                modifier = Modifier.padding(end = 30.dp).size(150.dp)
+                modifier = Modifier
+                    .padding(end = 30.dp)
+                    .size(150.dp)
             )
             Text(
                 text = stringResource(id = R.string.register),

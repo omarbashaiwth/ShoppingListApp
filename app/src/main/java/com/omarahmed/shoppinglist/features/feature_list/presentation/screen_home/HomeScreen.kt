@@ -78,11 +78,13 @@ fun HomeScreen(
                     DropdownMenuItem(
                         onClick = {
                             menuExpanded = false
-                            cartViewModel.deleteAllItems(
-                                ids =  allItems.itemSnapshotList.map {
-                                    it?.id ?: ""
-                                }
-                            )
+                            if (allItems.itemSnapshotList.isNotEmpty()){
+                                cartViewModel.deleteAllItems(
+                                    ids =  allItems.itemSnapshotList.map {
+                                        it?.id ?: ""
+                                    }
+                                )
+                            }
                             homeViewModel.logout()
                         }
                     ) {
@@ -91,26 +93,27 @@ fun HomeScreen(
                 }
             }
         )
-        if (allItems.itemSnapshotList.isEmpty()){
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-                modifier = Modifier.fillMaxSize()
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.empty_cart),
-                    contentDescription = null,
-                    modifier = Modifier.size(100.dp)
-                )
-                Spacer(modifier = Modifier.height(SmallSpace))
-                Text(text = stringResource(R.string.no_items_yet_found))
-            }
-        }
+
         SwipeRefresh(
             state = rememberSwipeRefreshState(isRefreshing = allItems.loadState.refresh is LoadState.Loading),
             onRefresh = {allItems.refresh()},
             modifier = Modifier.fillMaxSize()
         ) {
+            if (allItems.itemSnapshotList.isEmpty()){
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.empty_cart),
+                        contentDescription = null,
+                        modifier = Modifier.size(100.dp)
+                    )
+                    Spacer(modifier = Modifier.height(SmallSpace))
+                    Text(text = stringResource(R.string.no_items_yet_found))
+                }
+            }
             LazyVerticalGrid(
                 cells = GridCells.Fixed(2),
                 contentPadding = PaddingValues(

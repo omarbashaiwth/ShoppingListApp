@@ -14,7 +14,8 @@ The followings are the technologies and liberaries that I applied in building th
 
 ## screenshots:
 
-![WhatsApp Image 2022-04-11 at 11 44 57 PM (1)](https://user-images.githubusercontent.com/60521259/162779542-712d2260-a219-425d-b77a-cdea07cab97f.jpeg)
+<img src="https://github.com/om2013ab/ShoppingListApp/blob/master/WhatsApp%20Image%202022-04-11%20at%2011.44.56%20PM.jpeg" width="200" height="400" />
+
 
 ![WhatsApp Image 2022-04-11 at 11 44 56 PM](https://user-images.githubusercontent.com/60521259/162779530-6933f5d7-ec65-4671-b4e6-4f1de3e5dfca.jpeg)
 

@@ -4,31 +4,19 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.material.FabPosition
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.rememberScaffoldState
-import androidx.compose.runtime.Composable
+import androidx.compose.material.*
 import androidx.compose.runtime.getValue
-import androidx.navigation.NavController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import coil.annotation.ExperimentalCoilApi
-import com.omarahmed.shoppinglist.feature_list.presentation.screen_add_item.AddItemScreen
-import com.omarahmed.shoppinglist.feature_cart.presentation.CartScreen
-import com.omarahmed.shoppinglist.feature_list.presentation.screen_home.HomeScreen
 import com.omarahmed.shoppinglist.core.presentation.component.BottomBarSection
 import com.omarahmed.shoppinglist.core.presentation.component.FabSection
-import com.omarahmed.shoppinglist.core.presentation.component.ToolbarSection
-import com.omarahmed.shoppinglist.feature_search.presentation.SearchScreen
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.*
-import com.omarahmed.shoppinglist.core.util.BottomNavItems
-import com.omarahmed.shoppinglist.core.util.Screens
+import com.omarahmed.shoppinglist.core.util.BottomNavDestinations
+import com.omarahmed.shoppinglist.features.NavGraphs
+import com.omarahmed.shoppinglist.features.destinations.AddItemScreenDestination
+import com.ramcosta.composedestinations.DestinationsNavHost
+import com.ramcosta.composedestinations.navigation.navigateTo
 import dagger.hilt.android.AndroidEntryPoint
 
 @ExperimentalCoilApi
@@ -40,94 +28,40 @@ class MainActivity : ComponentActivity() {
         setContent {
             ShoppingListTheme {
                 val navController = rememberNavController()
-                val scaffoldState = rememberScaffoldState()
+                val navBackStackEntry by navController.currentBackStackEntryAsState()
+                val hideBottomNav = navBackStackEntry?.arguments?.getBoolean(ARG_BOTTOM_NAV_VISIBILITY)
+
                 Scaffold(
-                    scaffoldState = scaffoldState,
                     backgroundColor = MaterialTheme.colors.background,
-                    topBar = {
-                        ToolbarSection(
-                            navController = navController,
-                            title = when (currentRoute(navController = navController)) {
-                                Screens.AddItemScreen.route -> Screens.AddItemScreen.title
-                                BottomNavItems.CartScreen.route -> BottomNavItems.CartScreen.title
-                                BottomNavItems.HomeScreen.route -> BottomNavItems.HomeScreen.title
-                                else -> ""
-                            },
-                            actionIcon = when (currentRoute(navController = navController)) {
-                                BottomNavItems.HomeScreen.route -> Icons.Filled.Search
-                                else -> null
-                            },
-                            showToolbar = currentRoute(navController = navController) != Screens.SearchScreen.route,
-                            showArrowBack = when (currentRoute(navController = navController)) {
-                                Screens.AddItemScreen.route -> true
-                                else -> false
-                            },
-                            onActionIconClick = {
-                                navController.navigate(Screens.SearchScreen.route)
-                            }
-                        )
-                    },
                     bottomBar = {
-                        BottomBarSection(
-                            showBottomBar = when (currentRoute(navController = navController)) {
-                                Screens.AddItemScreen.route -> false
-                                Screens.SearchScreen.route -> false
-                                else -> true
-                            },
-                            navController = navController,
-                            items = listOf(
-                                BottomNavItems.HomeScreen,
-                                BottomNavItems.CartScreen
+                        if (hideBottomNav == null || !hideBottomNav){
+                            BottomBarSection(
+                                navController = navController,
+                                backStackEntry = navBackStackEntry,
+                                destinations = listOf(
+                                    BottomNavDestinations.HomeScreen,
+                                    BottomNavDestinations.CartScreen
+                                )
                             )
-                        )
+                        }
                     },
-
                     floatingActionButton = {
-                        FabSection(
-                            navController = navController,
-                            showFabButton = when (currentRoute(navController = navController)) {
-                                Screens.AddItemScreen.route -> false
-                                Screens.SearchScreen.route -> false
-                                else -> true
-                            }
-                        )
-
+                        if (hideBottomNav == null || !hideBottomNav){
+                            FabSection(
+                                onFabClick = {navController.navigateTo(AddItemScreenDestination())},
+                            )
+                        }
                     },
                     floatingActionButtonPosition = FabPosition.Center,
                     isFloatingActionButtonDocked = true
                 ) {
-                    NavHost(
-                        navController = navController,
-                        startDestination = BottomNavItems.HomeScreen.route
-                    ) {
-                        composable(route = BottomNavItems.HomeScreen.route) {
-                            HomeScreen(scaffoldState)
-                        }
-                        composable(route = BottomNavItems.CartScreen.route) {
-                            CartScreen()
-                        }
-                        composable(route = Screens.AddItemScreen.route) {
-                            AddItemScreen(
-                                scaffoldState = scaffoldState,
-                                navController = navController
-                            )
-                        }
-                        composable(route = Screens.SearchScreen.route) {
-                            SearchScreen(scaffoldState = scaffoldState){
-                                navController.popBackStack()
-                            }
-                        }
-                    }
+                    DestinationsNavHost(navGraph = NavGraphs.root,  navController = navController)
                 }
             }
         }
     }
 }
 
-@Composable
-fun currentRoute(navController: NavController): String? {
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    return navBackStackEntry?.destination?.route
-}
+private const val ARG_BOTTOM_NAV_VISIBILITY = "hideBottomNav"
 
 

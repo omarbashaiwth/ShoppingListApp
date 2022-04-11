@@ -2,19 +2,19 @@ package com.omarahmed.shoppinglist.di
 
 import android.content.Context
 import androidx.room.Room
-import androidx.room.RoomDatabase
 import com.google.gson.Gson
-import com.omarahmed.shoppinglist.feature_cart.data.CartDao
-import com.omarahmed.shoppinglist.feature_cart.data.CartDatabase
-import com.omarahmed.shoppinglist.core.data.remote.ShoppingListApi
+import com.omarahmed.shoppinglist.BuildConfig.BASE_URL
+import com.omarahmed.shoppinglist.core.data.DataStoreManager
+import com.omarahmed.shoppinglist.features.feature_cart.data.CartDao
+import com.omarahmed.shoppinglist.features.feature_cart.data.CartDatabase
+import com.omarahmed.shoppinglist.features.feature_list.data.remote.ShoppingListApi
 import com.omarahmed.shoppinglist.core.util.Constants
-import com.omarahmed.shoppinglist.core.util.Constants.BASE_URL
-import com.omarahmed.shoppinglist.feature_cart.data.repository.CartRepoImpl
-import com.omarahmed.shoppinglist.feature_cart.domain.reposirtory.CartRepo
-import com.omarahmed.shoppinglist.feature_list.data.repository.ShoppingLisRepoImpl
-import com.omarahmed.shoppinglist.feature_list.domain.repository.ShoppingListRepo
-import com.omarahmed.shoppinglist.feature_search.data.repository.SearchRepoImpl
-import com.omarahmed.shoppinglist.feature_search.domain.repository.SearchRepo
+import com.omarahmed.shoppinglist.features.feature_cart.data.repository.CartRepoImpl
+import com.omarahmed.shoppinglist.features.feature_cart.domain.reposirtory.CartRepo
+import com.omarahmed.shoppinglist.features.feature_list.data.repository.ShoppingLisRepoImpl
+import com.omarahmed.shoppinglist.features.feature_list.domain.repository.ShoppingListRepo
+import com.omarahmed.shoppinglist.features.feature_search.data.repository.SearchRepoImpl
+import com.omarahmed.shoppinglist.features.feature_search.domain.repository.SearchRepo
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -42,10 +42,10 @@ object AppModule {
     @Singleton
     fun provideRepository(
         api: ShoppingListApi,
-        gson: Gson,
-        @ApplicationContext appContext: Context
+        @ApplicationContext appContext: Context,
+        dataStoreManager: DataStoreManager
     ): ShoppingListRepo {
-        return ShoppingLisRepoImpl(api, gson, appContext)
+        return ShoppingLisRepoImpl(api, appContext, dataStoreManager)
     }
 
     @Provides
@@ -56,8 +56,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideSearchRepo(api: ShoppingListApi): SearchRepo {
-        return SearchRepoImpl(api)
+    fun provideSearchRepo(api: ShoppingListApi, dataStoreManager: DataStoreManager): SearchRepo {
+        return SearchRepoImpl(api,dataStoreManager)
     }
 
     @Provides

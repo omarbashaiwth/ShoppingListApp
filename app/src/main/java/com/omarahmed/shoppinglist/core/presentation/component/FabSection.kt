@@ -8,25 +8,21 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
-import com.omarahmed.shoppinglist.core.util.Screens
 
 @Composable
 fun FabSection(
-    navController: NavController,
-    showFabButton: Boolean
+    onFabClick: () -> Unit
 ) {
-    if (showFabButton){
-        FloatingActionButton(
-            onClick = { navController.navigate(Screens.AddItemScreen.route)},
-            shape = CircleShape,
-            backgroundColor = MaterialTheme.colors.primary
-        ) {
-            Icon(
-                imageVector = Icons.Filled.Add,
-                contentDescription = "Add item",
-                tint = MaterialTheme.colors.onBackground
-            )
-        }
+    FloatingActionButton(
+        onClick = onFabClick,
+        shape = CircleShape,
+        backgroundColor = MaterialTheme.colors.primary
+    ) {
+        Icon(
+            imageVector = Icons.Filled.Add,
+            contentDescription = "Add item",
+            tint = MaterialTheme.colors.onBackground
+        )
     }
 
 }

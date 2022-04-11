@@ -1,5 +1,6 @@
 package com.omarahmed.shoppinglist.core.presentation.component
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
@@ -17,57 +18,60 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.GreenAccent
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.LargeCornerRadius
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.SmallCornerRadius
-import com.omarahmed.shoppinglist.core.util.BottomNavItems
+import com.omarahmed.shoppinglist.core.util.BottomNavDestinations
+import com.omarahmed.shoppinglist.features.navDestination
+import com.ramcosta.composedestinations.navigation.navigateTo
 
 @Composable
 fun BottomBarSection(
-    showBottomBar: Boolean,
     navController: NavController,
-    items: List<BottomNavItems>
+    backStackEntry: NavBackStackEntry?,
+    destinations: List<BottomNavDestinations>
 ) {
-    if (showBottomBar){
-        BottomAppBar(
-            cutoutShape = CircleShape,
-            modifier = Modifier
-                .clip(
-                    RoundedCornerShape(
-                        topStart = LargeCornerRadius,
-                        topEnd = LargeCornerRadius
-                    )
-                ),
-        ) {
-            val backStackEntry by navController.currentBackStackEntryAsState()
-            val curRoute = backStackEntry?.destination?.route
-            items.forEach { item ->
-                BottomNavigationItem(
-                    icon = {
-                        Box(
-                            contentAlignment = Alignment.Center,
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(SmallCornerRadius))
-                                .background(if (curRoute == item.route) GreenAccent else Color.Transparent)
-                                .padding(5.dp)
-                        ) {
-                            Icon(
-                                painter = painterResource(id = item.icon),
-                                contentDescription = item.title,
-                                tint = MaterialTheme.colors.onBackground
-                            )
-                        }
-                    },
-                    selected = curRoute == item.route,
-                    onClick = {
-                        navController.popBackStack()
-                        navController.navigate(item.route)
-                    }
+    BottomAppBar(
+        cutoutShape = CircleShape,
+        modifier = Modifier
+            .clip(
+                RoundedCornerShape(
+                    topStart = LargeCornerRadius,
+                    topEnd = LargeCornerRadius
                 )
-            }
+            ),
+    ) {
+        val curDestination = backStackEntry?.navDestination
+        destinations.forEach { destination ->
+            BottomNavigationItem(
+                selected = curDestination == destination.destination,
+                onClick = {
+                    navController.popBackStack()
+                    navController.navigateTo(destination.destination) {
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                },
+                icon = {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(SmallCornerRadius))
+                            .background(if (curDestination == destination.destination) GreenAccent else Color.Transparent)
+                            .padding(5.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(id = destination.icon),
+                            contentDescription = destination.title,
+                            tint = MaterialTheme.colors.onBackground
+                        )
+                    }
+                }
+            )
         }
     }
-
 }

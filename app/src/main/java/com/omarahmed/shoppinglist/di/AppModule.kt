@@ -3,12 +3,12 @@ package com.omarahmed.shoppinglist.di
 import android.content.Context
 import androidx.room.Room
 import com.google.gson.Gson
+import com.omarahmed.shoppinglist.BuildConfig.BASE_URL
 import com.omarahmed.shoppinglist.core.data.DataStoreManager
 import com.omarahmed.shoppinglist.features.feature_cart.data.CartDao
 import com.omarahmed.shoppinglist.features.feature_cart.data.CartDatabase
 import com.omarahmed.shoppinglist.features.feature_list.data.remote.ShoppingListApi
 import com.omarahmed.shoppinglist.core.util.Constants
-import com.omarahmed.shoppinglist.core.util.Constants.BASE_URL
 import com.omarahmed.shoppinglist.features.feature_cart.data.repository.CartRepoImpl
 import com.omarahmed.shoppinglist.features.feature_cart.domain.reposirtory.CartRepo
 import com.omarahmed.shoppinglist.features.feature_list.data.repository.ShoppingLisRepoImpl

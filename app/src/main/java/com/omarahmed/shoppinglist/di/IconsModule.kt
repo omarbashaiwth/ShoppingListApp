@@ -1,7 +1,7 @@
 package com.omarahmed.shoppinglist.di
 
 import android.content.Context
-import com.omarahmed.shoppinglist.core.util.Constants.ICONS_API_KEY
+import com.omarahmed.shoppinglist.BuildConfig.ICONS_API_KEY
 import com.omarahmed.shoppinglist.core.util.Constants.ICONS_BASE_URL
 import com.omarahmed.shoppinglist.features.feature_icon_search.data.remote.IconApi
 import com.omarahmed.shoppinglist.features.feature_icon_search.data.repository.IconRepositoryImpl

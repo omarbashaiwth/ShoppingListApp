@@ -1,8 +1,8 @@
 package com.omarahmed.shoppinglist.di
 
 import android.content.Context
+import com.omarahmed.shoppinglist.BuildConfig.BASE_URL
 import com.omarahmed.shoppinglist.core.data.DataStoreManager
-import com.omarahmed.shoppinglist.core.util.Constants.BASE_URL
 import com.omarahmed.shoppinglist.features.feature_auth.data.remote.AuthApi
 import com.omarahmed.shoppinglist.features.feature_auth.data.repository.AuthRepositoryImpl
 import com.omarahmed.shoppinglist.features.feature_auth.domain.repository.AuthRepository

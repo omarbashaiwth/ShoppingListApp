@@ -50,10 +50,8 @@ fun BottomBarSection(
             BottomNavigationItem(
                 selected = curDestination == destination.destination,
                 onClick = {
+                    navController.popBackStack()
                     navController.navigateTo(destination.destination) {
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
-                        }
                         launchSingleTop = true
                         restoreState = true
                     }

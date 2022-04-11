@@ -11,3 +11,14 @@ The followings are the technologies and liberaries that I applied in building th
 9) Canvas with Compose.
 10) Flow and Coroutines.
 11) Clean Architecture with MVVM.
+
+## screenshots:
+
+![WhatsApp Image 2022-04-11 at 11 44 57 PM (1)](https://user-images.githubusercontent.com/60521259/162779542-712d2260-a219-425d-b77a-cdea07cab97f.jpeg)
+
+![WhatsApp Image 2022-04-11 at 11 44 56 PM](https://user-images.githubusercontent.com/60521259/162779530-6933f5d7-ec65-4671-b4e6-4f1de3e5dfca.jpeg)
+
+![WhatsApp Image 2022-04-11 at 11 44 57 PM (2)](https://user-images.githubusercontent.com/60521259/162779538-d4f5ce5e-7dbd-45bb-8417-63022efd31c3.jpeg)
+
+![WhatsApp Image 2022-04-11 at 11 44 57 PM](https://user-images.githubusercontent.com/60521259/162779544-6f9d366e-da89-4a73-92bc-96fb74f2e73d.jpeg)
+

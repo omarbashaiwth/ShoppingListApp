@@ -33,7 +33,7 @@ fun SearchScreen(
     navigator: DestinationsNavigator,
     hideBottomNav: Boolean = true
 ) {
-    val state by searchViewModel.searchState
+    val state by searchViewModel.searchItem
     val scaffoldState = rememberScaffoldState()
 
     LaunchedEffect(key1 = scaffoldState) {

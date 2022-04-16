@@ -40,15 +40,15 @@ fun AddItemScreen(
     hideBottomNav: Boolean = true,
 ) {
     val scaffoldState = rememberScaffoldState()
-    val state by viewModel.addItemState
+    val state by viewModel.addItem
 //    val galleryLauncher = rememberLauncherForActivityResult(
 //        contract = ActivityResultContracts.GetContent()){
 //            viewModel.onEvent(AddItemEvent.PickIcon(it))
 //        }
-    LaunchedEffect(key1 = true){
+    LaunchedEffect(key1 = true) {
         viewModel.onEvent(AddItemEvent.PickIcon(selectedIconUrl))
         viewModel.events.collectLatest { event ->
-            when (event){
+            when (event) {
                 is UiEvent.ShowSnackbar -> {
                     scaffoldState.snackbarHostState.showSnackbar(event.message)
                 }
@@ -61,7 +61,7 @@ fun AddItemScreen(
     TopBarSection(
         title = stringResource(id = R.string.add_item),
         navigationIcon = Icons.Default.ArrowBack,
-        onArrowBackClick = {navigator.popBackStack()}
+        onArrowBackClick = { navigator.popBackStack() }
     )
 
     Column(
@@ -72,7 +72,7 @@ fun AddItemScreen(
         TextField(
             value = state.itemName,
             onValueChange = {
-                if (it.length <= Constants.MAX_ITEM_NAME_LENGTH){
+                if (it.length <= Constants.MAX_ITEM_NAME_LENGTH) {
                     viewModel.onEvent(AddItemEvent.EnteredName(it))
                 }
             },
@@ -94,13 +94,14 @@ fun AddItemScreen(
                 )
                 .clip(MaterialTheme.shapes.large)
                 .clickable {
-                           navigator.navigate(IconSearchScreenDestination())
+                    navigator.popBackStack()
+                    navigator.navigate(IconSearchScreenDestination())
 //                    galleryLauncher.launch("image/*")
                 },
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if (state.iconUrl.isBlank()){
+            if (state.iconUrl.isBlank()) {
                 Icon(
                     imageVector = Icons.Filled.AddCircle,
                     contentDescription = stringResource(id = R.string.add_item),
@@ -116,14 +117,15 @@ fun AddItemScreen(
                             .fillMaxSize(),
                         contentScale = ContentScale.Crop
                     )
-                    Box(modifier = Modifier
-                        .background(color = Color.DarkGray)
-                        .align(Alignment.TopEnd)
+                    Box(
+                        modifier = Modifier
+                            .background(color = Color.DarkGray)
+                            .align(Alignment.TopEnd)
                     ) {
                         IconButton(
-                            imageVector = Icons.Filled.Cancel ,
+                            imageVector = Icons.Filled.Cancel,
                             contentDescription = stringResource(id = R.string.delete_image),
-                            onClick = {viewModel.onEvent(AddItemEvent.PickIcon(""))}
+                            onClick = { viewModel.onEvent(AddItemEvent.PickIcon("")) }
                         )
                     }
                 }

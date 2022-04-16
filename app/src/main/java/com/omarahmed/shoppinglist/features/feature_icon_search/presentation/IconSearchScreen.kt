@@ -1,7 +1,6 @@
 package com.omarahmed.shoppinglist.features.feature_icon_search.presentation
 
 import android.util.Log
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -21,18 +20,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberImagePainter
-import com.omarahmed.shoppinglist.core.presentation.ui.theme.MediumSpace
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.SmallSpace
 import com.omarahmed.shoppinglist.core.presentation.util.UiEvent
-import com.omarahmed.shoppinglist.core.util.BottomNavDestinations
 import com.omarahmed.shoppinglist.features.destinations.AddItemScreenDestination
 import com.omarahmed.shoppinglist.features.feature_icon_search.data.remote.response.Format
-import com.omarahmed.shoppinglist.features.feature_icon_search.data.remote.response.IconResponse
 import com.omarahmed.shoppinglist.features.feature_search.presentation.components.SearchTextField
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.flow.collectLatest
-import okhttp3.internal.filterList
 
 @Destination
 @Composable
@@ -41,11 +36,10 @@ fun IconSearchScreen(
     navigator: DestinationsNavigator,
     hideBottomNav: Boolean = true
 ) {
-    val iconQuery by viewModel.iconQuery
-    val searchResult by viewModel.searchResult
+    val state by viewModel.iconSearch
     val scaffoldState = rememberScaffoldState()
 
-    LaunchedEffect(key1 = Unit){
+    LaunchedEffect(key1 = scaffoldState){
         viewModel.events.collectLatest { event ->
             when(event) {
                 is UiEvent.ShowSnackbar -> {
@@ -58,15 +52,15 @@ fun IconSearchScreen(
 
     Column(modifier = Modifier.fillMaxSize()) {
         SearchTextField(
-            searchQuery = iconQuery.text,
-            onSearchQueryChange = {viewModel.onIconQueryChange(it)},
-            onSearch = {viewModel.onSearch(it)},
+            searchQuery = state.iconSearchQuery,
+            onSearchQueryChange = {viewModel.onEvent(IconSearchEvent.OnIconQueryChange(it))},
+            onSearch = {viewModel.onEvent(IconSearchEvent.OnIconSearch(it))},
             onBackClick = { navigator.popBackStack() }
         )
-        if (searchResult.isLoading){
+        if (state.isLoading){
             LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
         }
-        if (searchResult.iconSearchResult?.totalCount == 0){
+        if (state.iconSearchResult?.totalCount == 0){
             Column(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
@@ -81,7 +75,7 @@ fun IconSearchScreen(
             }
         }
         LazyVerticalGrid(cells = GridCells.Fixed(2)){
-            val response = searchResult.iconSearchResult?.icons ?: emptyList()
+            val response = state.iconSearchResult?.icons ?: emptyList()
             items(response.size){
                 Log.d("IconSearchScreen",response.size.toString())
                 val listFormat = mutableListOf<Format>()

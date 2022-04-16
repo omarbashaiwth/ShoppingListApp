@@ -18,8 +18,8 @@ class AddItemViewModel @Inject constructor(
 ) : ViewModel() {
 
 
-    private val _addItemState = mutableStateOf(AddItemState())
-    val addItemState: State<AddItemState> = _addItemState
+    private val addItemState = mutableStateOf(AddItemState())
+    val addItem: State<AddItemState> = addItemState
 
     private val eventFlow = MutableSharedFlow<UiEvent>()
     val events = eventFlow.asSharedFlow()
@@ -27,20 +27,20 @@ class AddItemViewModel @Inject constructor(
     fun onEvent(event: AddItemEvent) {
         when (event) {
             is AddItemEvent.EnteredName -> {
-                _addItemState.value = _addItemState.value.copy(
+                addItemState.value = addItemState.value.copy(
                     itemName = event.name
                 )
             }
             is AddItemEvent.PickIcon -> {
-                _addItemState.value = _addItemState.value.copy(
+                addItemState.value = addItemState.value.copy(
                     iconUrl = event.url
                 )
             }
             is AddItemEvent.SaveItem -> {
                 viewModelScope.launch {
                     repo.addNewItem(
-                        itemName = _addItemState.value.itemName,
-                        itemIconUrl = _addItemState.value.iconUrl
+                        itemName = addItemState.value.itemName,
+                        itemIconUrl = addItemState.value.iconUrl
                     )
                 }
             }

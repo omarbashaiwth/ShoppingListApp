@@ -4,6 +4,7 @@ import com.omarahmed.shoppinglist.features.feature_icon_search.data.remote.respo
 import com.omarahmed.shoppinglist.features.feature_icon_search.data.remote.response.IconResponse
 
 data class IconSearchState(
+    val iconSearchQuery: String = "",
     val isLoading: Boolean = false,
     val iconSearchResult: IconResponse? = null
 )

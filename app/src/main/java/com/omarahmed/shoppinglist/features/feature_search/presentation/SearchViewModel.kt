@@ -21,8 +21,8 @@ class SearchViewModel @Inject constructor(
 ):ViewModel() {
 
 
-    private val _searchState = mutableStateOf(SearchState())
-    val searchState: State<SearchState> = _searchState
+    private val searchItemState = mutableStateOf(SearchState())
+    val searchItem: State<SearchState> = searchItemState
 
     private val eventFlow = MutableSharedFlow<UiEvent>()
     val events = eventFlow.asSharedFlow()
@@ -32,7 +32,7 @@ class SearchViewModel @Inject constructor(
     fun onEvent(event: SearchEvent){
         when(event){
             is SearchEvent.EnteredQuery -> {
-                _searchState.value = _searchState.value.copy(
+                searchItemState.value = searchItemState.value.copy(
                     searchQuery = event.query
                 )
                 searchJob?.cancel()
@@ -45,11 +45,11 @@ class SearchViewModel @Inject constructor(
     }
 
     private suspend fun searchItems(){
-        _searchState.value = _searchState.value.copy(isLoading = true)
-        when(val result = searchRepo.getSearchResult(_searchState.value.searchQuery)){
+        searchItemState.value = searchItemState.value.copy(isLoading = true)
+        when(val result = searchRepo.getSearchResult(searchItemState.value.searchQuery)){
             is Resource.Success -> {
                 val data = result.data ?: emptyList()
-                _searchState.value = _searchState.value.copy(
+                searchItemState.value = searchItemState.value.copy(
                     searchResult = data,
                     isLoading = false,
                 )
@@ -57,7 +57,7 @@ class SearchViewModel @Inject constructor(
             }
             is Resource.Error -> {
                 eventFlow.emit(UiEvent.ShowSnackbar(result.message ?: "Unknown error occurred"))
-                _searchState.value = _searchState.value.copy(searchResult = emptyList(), isLoading = false)
+                searchItemState.value = searchItemState.value.copy(searchResult = emptyList(), isLoading = false)
             }
         }
     }

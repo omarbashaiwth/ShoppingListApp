@@ -12,6 +12,12 @@ The followings are the technologies and liberaries that I applied in building th
 10) Flow and Coroutines.
 11) Clean Architecture with MVVM.
 
+# Future Improvemnts:
+1) Confirm the user account using email.
+2) Enable user to reset password.
+3) Enable user to login using Google account.
+4) Enable user to share his cart items with other users. 
+
 # Screenshots:
 
 Login Screen               |  Home Screen              | Add Item Screen           | Cart Screen

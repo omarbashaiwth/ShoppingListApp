@@ -16,12 +16,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
-import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.omarahmed.shoppinglist.R
 import com.omarahmed.shoppinglist.core.presentation.util.UiEvent
@@ -31,9 +27,7 @@ import com.omarahmed.shoppinglist.core.presentation.component.TopBarSection
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.*
 import com.omarahmed.shoppinglist.features.destinations.HomeScreenDestination
 import com.omarahmed.shoppinglist.features.destinations.IconSearchScreenDestination
-import com.omarahmed.shoppinglist.features.feature_list.data.remote.request.AddItemRequest
 import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavController
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.flow.collectLatest
 
@@ -46,15 +40,14 @@ fun AddItemScreen(
     hideBottomNav: Boolean = true,
 ) {
     val scaffoldState = rememberScaffoldState()
-    val itemName by viewModel.itemName
-    val itemIcon by viewModel.iconUrl
+    val state by viewModel.addItemState
 //    val galleryLauncher = rememberLauncherForActivityResult(
 //        contract = ActivityResultContracts.GetContent()){
 //            viewModel.onEvent(AddItemEvent.PickIcon(it))
 //        }
     LaunchedEffect(key1 = true){
         viewModel.onEvent(AddItemEvent.PickIcon(selectedIconUrl))
-        viewModel.eventFlow.collectLatest { event ->
+        viewModel.events.collectLatest { event ->
             when (event){
                 is UiEvent.ShowSnackbar -> {
                     scaffoldState.snackbarHostState.showSnackbar(event.message)
@@ -77,7 +70,7 @@ fun AddItemScreen(
 
         Spacer(modifier = Modifier.height(SuperLargeSpace))
         TextField(
-            value = itemName.text,
+            value = state.itemName,
             onValueChange = {
                 if (it.length <= Constants.MAX_ITEM_NAME_LENGTH){
                     viewModel.onEvent(AddItemEvent.EnteredName(it))
@@ -107,7 +100,7 @@ fun AddItemScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if (itemIcon.isBlank()){
+            if (state.iconUrl.isBlank()){
                 Icon(
                     imageVector = Icons.Filled.AddCircle,
                     contentDescription = stringResource(id = R.string.add_item),
@@ -117,7 +110,7 @@ fun AddItemScreen(
             } else {
                 Box {
                     Image(
-                        painter = rememberImagePainter(data = itemIcon),
+                        painter = rememberImagePainter(data = state.iconUrl),
                         contentDescription = null,
                         modifier = Modifier
                             .fillMaxSize(),
@@ -145,7 +138,7 @@ fun AddItemScreen(
                 navigator.popBackStack()
                 navigator.navigate(HomeScreenDestination())
             },
-            enabled = itemName.text.trim().isNotEmpty()
+            enabled = state.itemName.trim().isNotEmpty()
         ) {
             Text(
                 text = stringResource(id = R.string.add),

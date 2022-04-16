@@ -1,6 +1,5 @@
 package com.omarahmed.shoppinglist.features.feature_search.presentation
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -25,8 +24,8 @@ class SearchViewModel @Inject constructor(
     private val _searchState = mutableStateOf(SearchState())
     val searchState: State<SearchState> = _searchState
 
-    private val _eventFlow = MutableSharedFlow<UiEvent>()
-    val eventFlow = _eventFlow.asSharedFlow()
+    private val eventFlow = MutableSharedFlow<UiEvent>()
+    val events = eventFlow.asSharedFlow()
 
     private var searchJob: Job? = null
 
@@ -57,7 +56,7 @@ class SearchViewModel @Inject constructor(
 
             }
             is Resource.Error -> {
-                _eventFlow.emit(UiEvent.ShowSnackbar(result.message ?: "Unknown error occurred"))
+                eventFlow.emit(UiEvent.ShowSnackbar(result.message ?: "Unknown error occurred"))
                 _searchState.value = _searchState.value.copy(searchResult = emptyList(), isLoading = false)
             }
         }

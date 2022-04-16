@@ -1,25 +1,18 @@
 package com.omarahmed.shoppinglist.features.feature_search.presentation
 
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.SearchOff
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.omarahmed.shoppinglist.R
 import com.omarahmed.shoppinglist.features.feature_list.presentation.screen_home.components.ShoppingItem
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.SmallSpace
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.SuperLargeSpace
-import com.omarahmed.shoppinglist.core.presentation.ui.theme.White
 import com.omarahmed.shoppinglist.core.presentation.util.UiEvent
 import com.omarahmed.shoppinglist.features.feature_cart.data.entity.CartEntity
 import com.omarahmed.shoppinglist.features.feature_cart.presentation.CartViewModel
@@ -44,7 +37,7 @@ fun SearchScreen(
     val scaffoldState = rememberScaffoldState()
 
     LaunchedEffect(key1 = scaffoldState) {
-        searchViewModel.eventFlow.collectLatest { event ->
+        searchViewModel.events.collectLatest { event ->
             when (event) {
                 is UiEvent.ShowSnackbar -> {
                     scaffoldState.snackbarHostState.showSnackbar(

@@ -4,7 +4,6 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.omarahmed.shoppinglist.core.domain.states.TextFieldState
 import com.omarahmed.shoppinglist.core.presentation.util.UiEvent
 import com.omarahmed.shoppinglist.features.feature_list.domain.repository.ShoppingListRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,34 +17,30 @@ class AddItemViewModel @Inject constructor(
     private val repo: ShoppingListRepo,
 ) : ViewModel() {
 
-    private val itemNameState = mutableStateOf(TextFieldState())
-    val itemName: State<TextFieldState> = itemNameState
 
-//    private val _itemNameState = mutableStateOf(TextFieldState())
-//    val itemNameState: State<TextFieldState> = _itemNameState
+    private val _addItemState = mutableStateOf(AddItemState())
+    val addItemState: State<AddItemState> = _addItemState
 
-    private val _eventFlow = MutableSharedFlow<UiEvent>()
-    val eventFlow = _eventFlow.asSharedFlow()
-
-    private val iconUrlState = mutableStateOf("")
-    val iconUrl: State<String> = iconUrlState
-
+    private val eventFlow = MutableSharedFlow<UiEvent>()
+    val events = eventFlow.asSharedFlow()
 
     fun onEvent(event: AddItemEvent) {
         when (event) {
             is AddItemEvent.EnteredName -> {
-                itemNameState.value = itemNameState.value.copy(
-                    text = event.name
+                _addItemState.value = _addItemState.value.copy(
+                    itemName = event.name
                 )
             }
             is AddItemEvent.PickIcon -> {
-                iconUrlState.value = event.url
+                _addItemState.value = _addItemState.value.copy(
+                    iconUrl = event.url
+                )
             }
             is AddItemEvent.SaveItem -> {
                 viewModelScope.launch {
                     repo.addNewItem(
-                        itemName = itemNameState.value.text,
-                        itemIconUrl = iconUrlState.value
+                        itemName = _addItemState.value.itemName,
+                        itemIconUrl = _addItemState.value.iconUrl
                     )
                 }
             }

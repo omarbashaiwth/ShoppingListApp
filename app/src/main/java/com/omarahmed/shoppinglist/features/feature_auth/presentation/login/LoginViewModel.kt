@@ -1,22 +1,21 @@
 package com.omarahmed.shoppinglist.features.feature_auth.presentation.login
 
-import android.util.Log
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.omarahmed.shoppinglist.core.data.DataStoreManager
 import com.omarahmed.shoppinglist.core.domain.states.PasswordFieldState
 import com.omarahmed.shoppinglist.core.domain.states.TextFieldState
 import com.omarahmed.shoppinglist.core.presentation.util.UiEvent
 import com.omarahmed.shoppinglist.core.util.Resource
 import com.omarahmed.shoppinglist.features.destinations.HomeScreenDestination
-import com.omarahmed.shoppinglist.features.feature_auth.domain.repository.AuthRepository
 import com.omarahmed.shoppinglist.features.feature_auth.domain.use_case.LoginUseCase
+import com.omarahmed.shoppinglist.features.feature_auth.presentation.AuthEvent
+import com.omarahmed.shoppinglist.features.feature_auth.presentation.AuthState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -24,57 +23,74 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val loginResult: LoginUseCase,
-): ViewModel() {
+) : ViewModel() {
 
-    private val emailState = mutableStateOf(TextFieldState())
-    val email: State<TextFieldState> = emailState
+    private val authLoginState = mutableStateOf(AuthState())
+    val authLogin: State<AuthState> = authLoginState
 
-    private val passwordState = mutableStateOf(PasswordFieldState())
-    val password: State<PasswordFieldState> = passwordState
+    private val eventFlow = MutableSharedFlow<UiEvent>()
+    val events = eventFlow.asSharedFlow()
 
-    private val loadingState = mutableStateOf(false)
-    val loading: State<Boolean> = loadingState
 
-    private val eventChannel = Channel<UiEvent>()
-    val events = eventChannel.receiveAsFlow()
+    fun onEvent(event: AuthEvent) {
+        when (event) {
+            is AuthEvent.OnEmailChanged -> {
+                authLoginState.value = authLoginState.value.copy(
+                    email = event.email
+                )
+            }
+            is AuthEvent.OnPasswordChanged -> {
+                authLoginState.value = authLoginState.value.copy(
+                    password = event.password
+                )
+            }
+            is AuthEvent.OnPasswordToggleVisibility -> {
+                authLoginState.value = authLoginState.value.copy(
+                    isPasswordVisible = !event.isPasswordVisible
+                )
+            }
+            AuthEvent.OnLoginUser -> {
+                loginUser()
+            }
+            else -> Unit
+        }
 
-    fun onEmailChange(email: String) {
-        emailState.value = emailState.value.copy(text = email)
     }
 
-    fun onPasswordChange(password: String){
-        passwordState.value = passwordState.value.copy(text = password)
-    }
 
-    fun onPasswordToggleVisibility(isPasswordVisible: Boolean){
-        passwordState.value = passwordState.value.copy(isPasswordVisible = !isPasswordVisible )
-    }
-
-    fun onLoginUser() = viewModelScope.launch {
-        emailState.value = emailState.value.copy(error = null)
-        passwordState.value = passwordState.value.copy(error = null)
-        loadingState.value = true
-
+    private fun loginUser() = viewModelScope.launch {
+        authLoginState.value = authLoginState.value.copy(
+            error = null,
+            loading = true
+        )
         val loginResult = loginResult(
-            email = emailState.value.text,
-            password = passwordState.value.text
+            email = authLoginState.value.email,
+            password = authLoginState.value.password
         )
         if (loginResult.emailError != null) {
-            emailState.value = emailState.value.copy(error = loginResult.emailError)
+            authLoginState.value = authLoginState.value.copy(
+                error = loginResult.emailError
+            )
         }
-        when(loginResult.result) {
+        when (loginResult.result) {
             is Resource.Success -> {
-                emailState.value = TextFieldState()
-                passwordState.value = PasswordFieldState()
-                loadingState.value = false
-                eventChannel.send(UiEvent.Navigate(HomeScreenDestination))
+                authLoginState.value = AuthState()
+                eventFlow.emit(UiEvent.Navigate(HomeScreenDestination))
             }
             is Resource.Error -> {
-                loadingState.value = false
-                eventChannel.send(UiEvent.ShowSnackbar(loginResult.result.message ?: "Error, try again later"))
+                authLoginState.value = authLoginState.value.copy(
+                    loading = false
+                )
+                eventFlow.emit(
+                    UiEvent.ShowSnackbar(
+                        loginResult.result.message ?: "Error, try again later"
+                    )
+                )
             }
             null -> {
-                loadingState.value = false
+                authLoginState.value = authLoginState.value.copy(
+                    loading = false
+                )
             }
         }
 

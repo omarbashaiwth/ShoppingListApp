@@ -30,10 +30,12 @@ import com.omarahmed.shoppinglist.core.presentation.ui.theme.*
 import com.omarahmed.shoppinglist.core.presentation.util.UiEvent
 import com.omarahmed.shoppinglist.features.destinations.LoginScreenDestination
 import com.omarahmed.shoppinglist.features.destinations.RegisterScreenDestination
+import com.omarahmed.shoppinglist.features.feature_auth.presentation.AuthEvent
 import com.omarahmed.shoppinglist.features.feature_auth.presentation.util.AuthError
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.flow.collectLatest
+import javax.crypto.AEADBadTagException
 
 @Destination()
 @Composable
@@ -44,12 +46,9 @@ fun RegisterScreen(
 ) {
     val scaffoldState = rememberScaffoldState()
     val focusManager = LocalFocusManager.current
-    val nameState by viewModel.name
-    val emailState by viewModel.email
-    val passwordState by viewModel.password
-    val loading by viewModel.loading
+    val state by viewModel.authRegister
 
-    LaunchedEffect(key1 = Unit){
+    LaunchedEffect(key1 = scaffoldState){
         viewModel.events.collectLatest { event ->
             when(event){
                 is UiEvent.ShowSnackbar -> {
@@ -62,7 +61,7 @@ fun RegisterScreen(
         }
     }
     Scaffold(scaffoldState = scaffoldState) {
-        if (loading){
+        if (state.loading){
             LinearProgressIndicator(
                 modifier = Modifier.fillMaxWidth(),
                 color = White
@@ -95,11 +94,11 @@ fun RegisterScreen(
             )
             Spacer(modifier = Modifier.height(SuperLargeSpace * 2))
             StandardTextField(
-                value = nameState.text,
+                value = state.name,
                 hint = stringResource(id = R.string.name),
                 onValueChange = {
                     if (it.length <= 20) {
-                        viewModel.onNameChange(it)
+                        viewModel.onEvent(AuthEvent.OnNameChanged(it))
                     }
                 },
                 leadingIcon = Icons.Filled.Person,
@@ -110,14 +109,14 @@ fun RegisterScreen(
             )
             Spacer(modifier = Modifier.height(MediumSpace))
             StandardTextField(
-                value = emailState.text.lowercase(),
+                value = state.email.lowercase(),
                 hint = stringResource(id = R.string.email),
                 onValueChange = {
-                    viewModel.onEmailChange(it)
+                    viewModel.onEvent(AuthEvent.OnEmailChanged(it))
                 },
                 leadingIcon = Icons.Filled.Email,
                 keyboardType = KeyboardType.Email,
-                error = when (emailState.error) {
+                error = when (state.error) {
                     is AuthError.InvalidEmailError -> stringResource(id = R.string.invalid_email_msg)
                     else -> ""
                 },
@@ -128,35 +127,35 @@ fun RegisterScreen(
             )
             Spacer(modifier = Modifier.height(MediumSpace))
             StandardTextField(
-                value = passwordState.text,
+                value = state.password,
                 hint = stringResource(id = R.string.password),
                 onValueChange = {
-                    viewModel.onPasswordChange(it)
+                    viewModel.onEvent(AuthEvent.OnPasswordChanged(it))
                 },
                 leadingIcon = Icons.Filled.Lock,
-                trailingIcon = if (passwordState.isPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                isPasswordVisible = passwordState.isPasswordVisible,
+                trailingIcon = if (state.isPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                isPasswordVisible = state.isPasswordVisible,
                 onTrailingIconClick = {
-                    viewModel.onPasswordToggleVisibility(it)
+                    viewModel.onEvent(AuthEvent.OnPasswordToggleVisibility(it))
                 },
-                visualTransformation = if (passwordState.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                error = when (passwordState.error) {
+                visualTransformation = if (state.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                error = when (state.error) {
                     is AuthError.TooShortInputError -> stringResource(id = R.string.too_short_password_msg)
                     is AuthError.InvalidPasswordError -> stringResource(id = R.string.invalid_password_msg)
                     else -> ""
                 },
                 imeAction = ImeAction.Done,
                 keyboardActions = KeyboardActions(
-                    onDone = {viewModel.onCreateUser()}
+                    onDone = {viewModel.onEvent(AuthEvent.OnCreateUser)}
                 )
             )
             Spacer(modifier = Modifier.height(SuperLargeSpace))
             Button(
                 onClick = {
-                    viewModel.onCreateUser()
+                    viewModel.onEvent(AuthEvent.OnCreateUser)
                 },
                 modifier = Modifier.fillMaxWidth(),
-                enabled = nameState.text.isNotBlank() && emailState.text.isNotBlank() && passwordState.text.isNotBlank()
+                enabled = state.name.isNotBlank() && state.email.isNotBlank() && state.password.isNotBlank()
             ) {
                 Text(
                     text = stringResource(id = R.string.register).uppercase(),

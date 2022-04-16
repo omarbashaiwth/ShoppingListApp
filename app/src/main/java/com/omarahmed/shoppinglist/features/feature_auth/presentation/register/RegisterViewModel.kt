@@ -9,9 +9,13 @@ import com.omarahmed.shoppinglist.core.presentation.util.UiEvent
 import com.omarahmed.shoppinglist.core.util.Resource
 import com.omarahmed.shoppinglist.features.destinations.LoginScreenDestination
 import com.omarahmed.shoppinglist.features.feature_auth.domain.use_case.RegisterUseCase
+import com.omarahmed.shoppinglist.features.feature_auth.presentation.AuthEvent
+import com.omarahmed.shoppinglist.features.feature_auth.presentation.AuthState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -21,78 +25,84 @@ class RegisterViewModel @Inject constructor(
     private val registerResult: RegisterUseCase
 ) : ViewModel() {
 
-    private val nameState = mutableStateOf(TextFieldState())
-    val name: State<TextFieldState> = nameState
+    private val authRegisterState = mutableStateOf(AuthState())
+    val authRegister: State<AuthState> = authRegisterState
 
-    private val emailState = mutableStateOf(TextFieldState())
-    val email: State<TextFieldState> = emailState
+    private val eventFlow = MutableSharedFlow<UiEvent>()
+    val events = eventFlow.asSharedFlow()
 
-    private val passwordState = mutableStateOf(PasswordFieldState())
-    val password: State<PasswordFieldState> = passwordState
-
-    private val loadingState = mutableStateOf(false)
-    val loading: State<Boolean> = loadingState
-
-    private val eventChannel = Channel<UiEvent>()
-    val events = eventChannel.receiveAsFlow()
-
-    fun onNameChange(name: String) {
-        nameState.value = nameState.value.copy(text = name)
+    fun onEvent(event: AuthEvent) {
+        when (event) {
+            is AuthEvent.OnNameChanged -> {
+                authRegisterState.value = authRegisterState.value.copy(
+                    name = event.name
+                )
+            }
+            is AuthEvent.OnEmailChanged -> {
+                authRegisterState.value = authRegisterState.value.copy(
+                    email = event.email
+                )
+            }
+            is AuthEvent.OnPasswordChanged -> {
+                authRegisterState.value = authRegisterState.value.copy(
+                    password = event.password
+                )
+            }
+            is AuthEvent.OnPasswordToggleVisibility -> {
+                authRegisterState.value = authRegisterState.value.copy(
+                    isPasswordVisible = !event.isPasswordVisible
+                )
+            }
+            AuthEvent.OnCreateUser -> {
+                createUser()
+            }
+            else -> Unit
+        }
     }
 
-    fun onEmailChange(email: String) {
-        emailState.value = emailState.value.copy(text = email)
-    }
-
-    fun onPasswordChange(password: String) {
-        passwordState.value = passwordState.value.copy(text = password)
-    }
-
-    fun onPasswordToggleVisibility(isPasswordVisible: Boolean) {
-        passwordState.value = passwordState.value.copy(isPasswordVisible = !isPasswordVisible)
-    }
-
-    fun onCreateUser() = viewModelScope.launch {
-        nameState.value = nameState.value.copy(error = null)
-        emailState.value = emailState.value.copy(error = null)
-        passwordState.value = passwordState.value.copy(error = null)
-        loadingState.value = true
+    private fun createUser() = viewModelScope.launch {
+        authRegisterState.value = authRegisterState.value.copy(
+            error = null,
+            loading = true
+        )
 
         val registerResult = registerResult(
-            name = nameState.value.text,
-            email = emailState.value.text,
-            password = passwordState.value.text
+            name = authRegisterState.value.name,
+            email = authRegisterState.value.email,
+            password = authRegisterState.value.password
         )
 
         if (registerResult.emailError != null) {
-            emailState.value = emailState.value.copy(error = registerResult.emailError)
+            authRegisterState.value = authRegisterState.value.copy(
+                error = registerResult.emailError
+            )
         }
         if (registerResult.passwordError != null) {
-            passwordState.value = passwordState.value.copy(error = registerResult.passwordError)
+            authRegisterState.value = authRegisterState.value.copy(
+                error = registerResult.passwordError
+            )
         }
         when (registerResult.result) {
             is Resource.Success -> {
-                eventChannel.send(UiEvent.ShowSnackbar(registerResult.result.message ?: ""))
-                loadingState.value = false
+                eventFlow.emit(UiEvent.ShowSnackbar(registerResult.result.message ?: ""))
+                authRegisterState.value = AuthState()
                 delay(4000L)
-                eventChannel.send(UiEvent.Navigate(LoginScreenDestination()))
-                nameState.value = TextFieldState()
-                emailState.value = TextFieldState()
-                passwordState.value = PasswordFieldState()
-
+                eventFlow.emit(UiEvent.Navigate(LoginScreenDestination()))
             }
             is Resource.Error -> {
-                eventChannel.send(
+                eventFlow.emit(
                     UiEvent.ShowSnackbar(
                         registerResult.result.message ?: "Error, try again later"
                     )
                 )
-                loadingState.value = false
-
+                authRegisterState.value = authRegisterState.value.copy(
+                    loading = false
+                )
             }
             null -> {
-                loadingState.value = false
-
+                authRegisterState.value = authRegisterState.value.copy(
+                    loading = false
+                )
             }
         }
     }

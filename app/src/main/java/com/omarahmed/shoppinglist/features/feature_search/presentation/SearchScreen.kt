@@ -15,6 +15,7 @@ import com.omarahmed.shoppinglist.core.presentation.ui.theme.SmallSpace
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.SuperLargeSpace
 import com.omarahmed.shoppinglist.core.presentation.util.UiEvent
 import com.omarahmed.shoppinglist.features.feature_cart.data.entity.CartEntity
+import com.omarahmed.shoppinglist.features.feature_cart.presentation.CartEvent
 import com.omarahmed.shoppinglist.features.feature_cart.presentation.CartViewModel
 import com.omarahmed.shoppinglist.features.feature_list.presentation.screen_home.HomeViewModel
 import com.omarahmed.shoppinglist.features.feature_search.presentation.components.NoResultUi
@@ -77,16 +78,16 @@ fun SearchScreen(
                     val searchResult = state.searchResult[it]
                     ShoppingItem(shoppingItem = searchResult) {
                         if (!searchResult.isAddedToCart) {
-                            cartViewModel.insertItem(
+                            cartViewModel.onEvent(CartEvent.OnInsertItem(
                                 CartEntity(
                                     itemName = searchResult.name,
                                     itemIconUrl = searchResult.imageUrl ?: "",
                                     itemId = searchResult.id
                                 )
-                            )
+                            ))
                             homeViewModel.updateItem(searchResult.id, true)
                         } else {
-                            cartViewModel.deleteItem(searchResult.id)
+                            cartViewModel.onEvent(CartEvent.OnDeleteItem(searchResult.id))
                             homeViewModel.updateItem(searchResult.id, false)
 
                         }

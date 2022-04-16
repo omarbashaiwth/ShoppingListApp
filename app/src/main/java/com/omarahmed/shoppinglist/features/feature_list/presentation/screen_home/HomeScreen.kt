@@ -27,6 +27,7 @@ import com.omarahmed.shoppinglist.core.presentation.util.UiEvent
 import com.omarahmed.shoppinglist.features.destinations.HomeScreenDestination
 import com.omarahmed.shoppinglist.features.destinations.SearchScreenDestination
 import com.omarahmed.shoppinglist.features.feature_cart.data.entity.CartEntity
+import com.omarahmed.shoppinglist.features.feature_cart.presentation.CartEvent
 import com.omarahmed.shoppinglist.features.feature_cart.presentation.CartViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -79,11 +80,11 @@ fun HomeScreen(
                         onClick = {
                             menuExpanded = false
                             if (allItems.itemSnapshotList.isNotEmpty()){
-                                cartViewModel.deleteAllItems(
+                                cartViewModel.onEvent(CartEvent.OnDeleteAllItems(
                                     ids =  allItems.itemSnapshotList.map {
                                         it?.id ?: ""
                                     }
-                                )
+                                ))
                             }
                             homeViewModel.logout()
                         }
@@ -130,17 +131,17 @@ fun HomeScreen(
                             shoppingItem = item,
                             onAddItemClick = {
                                 if (!item.isAddedToCart){
-                                    cartViewModel.insertItem(
+                                    cartViewModel.onEvent(CartEvent.OnInsertItem(
                                         CartEntity(
                                             itemName = item.name,
                                             itemIconUrl = item.imageUrl ?: "",
                                             itemId = item.id
                                         )
-                                    )
+                                    ))
                                     homeViewModel.updateItem(item.id,true)
 
                                 } else {
-                                    cartViewModel.deleteItem(item.id)
+                                    cartViewModel.onEvent(CartEvent.OnDeleteItem(item.id))
                                     homeViewModel.updateItem(item.id,false)
                                 }
                             }

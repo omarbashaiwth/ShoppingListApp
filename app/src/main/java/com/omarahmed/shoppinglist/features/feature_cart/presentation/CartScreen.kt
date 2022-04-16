@@ -36,8 +36,7 @@ fun CartScreen(
     cartViewModel: CartViewModel = hiltViewModel(),
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
-    val allCartItems by cartViewModel.allItems
-    val showDialog by cartViewModel.showDialog
+    val state by cartViewModel.cartItems
     var menuExpanded by remember {
         mutableStateOf(false)
     }
@@ -57,7 +56,7 @@ fun CartScreen(
                     DropdownMenuItem(
                         onClick = {
                             menuExpanded = false
-                            cartViewModel.onDeleteAllClicked()
+                            cartViewModel.onEvent(CartEvent.OnDeleteAllClicked)
                         }
                     ) {
                         Text(text = stringResource(R.string.delete_all_items))
@@ -65,7 +64,7 @@ fun CartScreen(
                 }
             }
         )
-        if (allCartItems.isEmpty()) {
+        if (state.cartItems.isEmpty()) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
@@ -88,9 +87,9 @@ fun CartScreen(
                 top = SmallSpace
             )
         ) {
-            items(allCartItems.size) {
+            items(state.cartItems.size) {
                 CartItem(
-                    cartItem = allCartItems[it],
+                    cartItem = state.cartItems[it],
                     cartViewModel = cartViewModel,
                     homeViewModel = homeViewModel
                 )
@@ -98,10 +97,10 @@ fun CartScreen(
         }
     }
 
-    if (showDialog) {
+    if (state.showDialog) {
        StandardAlertDialog(
            cartViewModel = cartViewModel,
-           allCartItems = allCartItems
+           allCartItems = state.cartItems
        )
     }
 }

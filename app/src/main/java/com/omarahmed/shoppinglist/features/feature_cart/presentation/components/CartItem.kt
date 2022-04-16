@@ -24,6 +24,7 @@ import com.omarahmed.shoppinglist.core.presentation.ui.theme.LargeCornerRadius
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.SmallSpace
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.SuperLargeSpace
 import com.omarahmed.shoppinglist.features.feature_cart.data.entity.CartEntity
+import com.omarahmed.shoppinglist.features.feature_cart.presentation.CartEvent
 import com.omarahmed.shoppinglist.features.feature_cart.presentation.CartViewModel
 import com.omarahmed.shoppinglist.features.feature_list.presentation.screen_home.HomeViewModel
 
@@ -71,7 +72,7 @@ fun CartItem(
                 imageVector = Icons.Default.CheckCircle,
                 contentDescription = stringResource(id = R.string.already_bought),
                 onClick = {
-                    cartViewModel.onBoughtStateChange(cartItem)
+                    cartViewModel.onEvent(CartEvent.OnBoughtStateChanged(cartItem))
                 }
             )
             IconButton(
@@ -79,7 +80,7 @@ fun CartItem(
                 imageVector = Icons.Default.Delete,
                 contentDescription = stringResource(id = R.string.remove),
                 onClick = {
-                    cartViewModel.deleteItem(cartItem.itemId)
+                    cartViewModel.onEvent(CartEvent.OnDeleteItem(cartItem.itemId))
                     homeViewModel.updateItem(
                         cartItem.itemId,
                         false,

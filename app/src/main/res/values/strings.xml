@@ -41,4 +41,5 @@
     <string name="empty_cart_text">Your cart is already empty</string>
     <string name="confirm">Confirm</string>
     <string name="dismiss">Dismiss</string>
+    <string name="no_internet">No Internet Connection</string>
 </resources>

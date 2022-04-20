@@ -7,9 +7,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.WifiOff
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -20,10 +23,12 @@ import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.omarahmed.shoppinglist.R
+import com.omarahmed.shoppinglist.core.domain.states.ConnectionState
 import com.omarahmed.shoppinglist.core.presentation.component.TopBarSection
 import com.omarahmed.shoppinglist.features.feature_list.presentation.screen_home.components.ShoppingItem
 import com.omarahmed.shoppinglist.core.presentation.ui.theme.*
 import com.omarahmed.shoppinglist.core.presentation.util.UiEvent
+import com.omarahmed.shoppinglist.core.util.connectivity.connectivityState
 import com.omarahmed.shoppinglist.features.destinations.HomeScreenDestination
 import com.omarahmed.shoppinglist.features.destinations.SearchScreenDestination
 import com.omarahmed.shoppinglist.features.feature_cart.data.entity.CartEntity
@@ -48,6 +53,7 @@ fun HomeScreen(
     var menuExpanded by remember {
         mutableStateOf(false)
     }
+    val connectionState by connectivityState()
 
     LaunchedEffect(key1 = Unit){
         homeViewModel.events.collectLatest { event ->
@@ -100,7 +106,8 @@ fun HomeScreen(
             onRefresh = {allItems.refresh()},
             modifier = Modifier.fillMaxSize()
         ) {
-            if (allItems.itemSnapshotList.isEmpty()){
+            val isConnected = connectionState === ConnectionState.Available
+            if (allItems.itemSnapshotList.isEmpty() && isConnected){
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
@@ -115,54 +122,57 @@ fun HomeScreen(
                     Text(text = stringResource(R.string.no_items_yet_found))
                 }
             }
-            LazyVerticalGrid(
-                cells = GridCells.Fixed(2),
-                contentPadding = PaddingValues(
-                    bottom = SuperLargeSpace,
-                    start = SmallSpace,
-                    end = SmallSpace,
-                    top = SmallSpace
-                ),
-                modifier = Modifier.fillMaxSize()
-            ) {
-                items(allItems.itemCount) { index ->
-                    allItems[index]?.let {item ->
-                        ShoppingItem(
-                            shoppingItem = item,
-                            onAddItemClick = {
-                                if (!item.isAddedToCart){
-                                    cartViewModel.onEvent(CartEvent.OnInsertItem(
-                                        CartEntity(
-                                            itemName = item.name,
-                                            itemIconUrl = item.imageUrl ?: "",
-                                            itemId = item.id
-                                        )
-                                    ))
-                                    homeViewModel.updateItem(item.id,true)
-
-                                } else {
-                                    cartViewModel.onEvent(CartEvent.OnDeleteItem(item.id))
-                                    homeViewModel.updateItem(item.id,false)
-                                }
-                            }
-                        )
-//                        if (item.isAddedToCart){
-//                            Log.d("HomeScreen", "isAddedToCart")
-//                            cartViewModel.insertItem(
-//                                CartEntity(
-//                                    itemName = item.name,
-//                                    itemIconUrl = item.imageUrl ?: "",
-//                                    itemId = item.id
-//                                )
-//                            )
-//
-//                        } else {
-//                            Log.d("HomeScreen", "isNotAddedToCart")
-//                            cartViewModel.deleteItem(item.id)
-//                        }
-                    }
+            if (!isConnected){
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.WifiOff,
+                        contentDescription = null,
+                        modifier = Modifier.size(100.dp),
+                        tint = Color.White
+                    )
+                    Spacer(modifier = Modifier.height(SmallSpace))
+                    Text(text = stringResource(R.string.no_internet))
                 }
+            } else {
+                LazyVerticalGrid(
+                    cells = GridCells.Fixed(2),
+                    contentPadding = PaddingValues(
+                        bottom = SuperLargeSpace,
+                        start = SmallSpace,
+                        end = SmallSpace,
+                        top = SmallSpace
+                    ),
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    items(allItems.itemCount) { index ->
+                        allItems[index]?.let {item ->
+                            ShoppingItem(
+                                shoppingItem = item,
+                                onAddItemClick = {
+                                    if (!item.isAddedToCart){
+                                        cartViewModel.onEvent(CartEvent.OnInsertItem(
+                                            CartEntity(
+                                                itemName = item.name,
+                                                itemIconUrl = item.imageUrl ?: "",
+                                                itemId = item.id
+                                            )
+                                        ))
+                                        homeViewModel.updateItem(item.id,true)
 
+                                    } else {
+                                        cartViewModel.onEvent(CartEvent.OnDeleteItem(item.id))
+                                        homeViewModel.updateItem(item.id,false)
+                                    }
+                                }
+                            )
+                        }
+                    }
+
+                }
             }
         }
         

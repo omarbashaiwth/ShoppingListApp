@@ -68,6 +68,7 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
         freeCompilerArgs += ["-Xuse-experimental=androidx.compose.foundation.ExperimentalFoundationApi"]
         freeCompilerArgs += ["-Xuse-experimental=coil.annotation.ExperimentalCoilApi"]
         freeCompilerArgs += ["-Xuse-experimental=kotlin.OptIn"]
+        freeCompilerArgs += ["-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi"]
     }
 
 }

@@ -23,4 +23,5 @@ Login Screen               |  Home Screen              | Add Item Screen        
 1) Confirm the user account using email.
 2) Enable user to reset password.
 3) Enable user to login using Google account.
-4) Enable user to share his cart items with other users. 
+4) Enable user to share his cart items with other users.
+5) Deploy the local server to be a remote server. 

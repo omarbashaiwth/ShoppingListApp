@@ -1,12 +1,9 @@
-package com.omarahmed.shoppinglist.core.util
+package com.omarahmed.shoppinglist.core.util.connectivity
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
-import androidx.annotation.RequiresApi
-import androidx.core.net.ConnectivityManagerCompat
 import com.omarahmed.shoppinglist.core.domain.states.ConnectionState
 
 
@@ -16,7 +13,7 @@ val Context.currentConnectivityState: ConnectionState
         return getCurrentConnectivityState(connectivityManager)
     }
 
-fun Context.getCurrentConnectivityState(connectivityManager: ConnectivityManager): ConnectionState {
+fun getCurrentConnectivityState(connectivityManager: ConnectivityManager): ConnectionState {
      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
         val activeNetwork = connectivityManager.activeNetwork ?: return ConnectionState.Unavailable
         val capabilities = connectivityManager.getNetworkCapabilities(activeNetwork) ?: return ConnectionState.Unavailable

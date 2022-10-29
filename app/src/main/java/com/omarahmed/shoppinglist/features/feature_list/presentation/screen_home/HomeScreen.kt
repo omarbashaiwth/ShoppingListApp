@@ -13,6 +13,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -41,6 +42,7 @@ import retrofit2.HttpException
 import java.io.IOException
 
 
+@OptIn(ExperimentalFoundationApi::class, ExperimentalCoilApi::class)
 @Destination()
 @Composable
 fun HomeScreen(
@@ -53,7 +55,9 @@ fun HomeScreen(
     var menuExpanded by remember {
         mutableStateOf(false)
     }
-    val connectionState by connectivityState()
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    val connectionState by connectivityState(lifecycleOwner.lifecycle)
 
     LaunchedEffect(key1 = Unit){
         homeViewModel.events.collectLatest { event ->

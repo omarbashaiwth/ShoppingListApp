@@ -4,16 +4,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import com.omarahmed.shoppinglist.core.domain.states.ConnectionState
-import com.omarahmed.shoppinglist.core.util.currentConnectivityState
-import com.omarahmed.shoppinglist.core.util.observeConnectivityAsFlow
 import kotlinx.coroutines.flow.collect
 
 @Composable
-fun connectivityState(): State<ConnectionState> {
+fun connectivityState(lifecycle: Lifecycle): State<ConnectionState> {
     val context = LocalContext.current
     
     return produceState(initialValue = context.currentConnectivityState){
-        context.observeConnectivityAsFlow().collect { value = it }
+        context.observeConnectivityAsFlow(lifecycle).collect { value = it }
     }
 }

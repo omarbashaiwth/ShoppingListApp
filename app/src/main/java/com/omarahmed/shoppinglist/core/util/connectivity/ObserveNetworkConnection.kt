@@ -1,16 +1,19 @@
-package com.omarahmed.shoppinglist.core.util
+package com.omarahmed.shoppinglist.core.util.connectivity
 
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
 import com.omarahmed.shoppinglist.core.domain.states.ConnectionState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 
-fun Context.observeConnectivityAsFlow() = callbackFlow {
+@OptIn(ExperimentalCoroutinesApi::class)
+fun Context.observeConnectivityAsFlow(lifecycle: Lifecycle) = callbackFlow {
     val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     val callback = networkCallback { connectionState ->
         trySend(connectionState)
@@ -26,7 +29,7 @@ fun Context.observeConnectivityAsFlow() = callbackFlow {
     trySend(currentState)
 
     awaitClose { connectivityManager.unregisterNetworkCallback(callback) }
-}
+}.flowWithLifecycle(lifecycle)
 
 private fun networkCallback(callback: (ConnectionState) -> Unit): ConnectivityManager.NetworkCallback {
     return object : ConnectivityManager.NetworkCallback() {
